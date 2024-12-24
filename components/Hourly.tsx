@@ -1,48 +1,37 @@
 import { Text, View, FlatList } from 'react-native';
 import React from 'react';
-import ClearSkyDay from '../icons/ClearSkyDay';
+import { ClearSkyDay } from "../icons/index";
 
-const data = Array.from({ length: 24 }, (_, i) => {
-    const baseTemp = 20;
-    const hour = i;
-    const tempVariation = Math.sin((hour - 6) * Math.PI / 24) * 8;
-    const temp = Math.round(baseTemp + tempVariation);
-    
-    return {
-        time: `${i % 12 || 12} ${i < 12 ? 'AM' : 'PM'}`,
-        temp: `${temp}°C`,
-        id: i.toString(),
-    };
-});
 
-const HourlyItem = ({ item }) => (
-    <View className="items-center justify-center px-3 py-2 w-20">
-        <Text className="text-base font-semibold mb-2">
-            {item.time}
+const HourlyItem = ({ item }: any) => (
+    <View className="items-center bg-transparent flex my-4 gap-2 mx-1 flex-col-reverse justify-center px-3  w-20">
+        <Text className="text-base font-Roboto-Regular  mb-2">
+            11:00
         </Text>
-        <View className="bg-blue-50 rounded-full p-2 mb-2">
+        <View className="bg-blue-50 rounded-full p-1 mb-2">
             <ClearSkyDay height={40} width={40} />
         </View>
-        <Text className="text-lg font-bold">
-            {item.temp}
+        <Text className="text-lg font-Roboto-Regular mb-2">
+            {25}{"°C"}
         </Text>
     </View>
 );
 
 const Hourly = () => {
     return (
-        <View className="my-4">
-            <Text className="text-xl font-bold mb-3 ml-4">
+        <View className="mt-10">
+            <Text className="text-xl font-Roboto-Bold mb-3 ml-4">
                 Hourly Forecast
             </Text>
-            <View className="bg-white rounded-2xl mx-4 shadow-md">
+            <View className="flex rounded-2xl mx-4 bg-[rgba(225,225,225,0.65)] py-2 px-2 flex-row justify-between ">
                 <FlatList
                     horizontal
-                    className="py-3 px-2"
-                    data={data}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => <HourlyItem item={item} />}
-                    showsHorizontalScrollIndicator={false}
+                    data={Array.from({ length: 24 }, (i: number) => i)}
+                    renderItem={
+                        (items) => {
+                            return <HourlyItem key={items} />
+                        }
+                    }
                 />
             </View>
         </View>
