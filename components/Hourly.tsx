@@ -20,7 +20,7 @@ const HourlyItem = (props: {
           hour12: false,
         })}
       </Text>
-      <View className="bg-blue-50 rounded-full p-1 mb-2">
+      <View className="bg-green-50 rounded-full p-2 mb-2">
         {getWeatherIcon({
           WeatherCode: props.weatherCode,
           IsDay: props.isDay,
@@ -38,8 +38,7 @@ const HourlyItem = (props: {
 
 const Hourly = () => {
   const HourlyData = useHourlyWeatherStore((state) => state.hourlyWeather);
-  const isDay = useCurrentWeatherStore((state) => state.isDay);
-  console.log(HourlyData);
+  const isDay = useCurrentWeatherStore((state) => state.CurrentWeather.isDay);
   return (
     <View className="mt-10">
       <Text className="text-xl font-Roboto-Bold mb-3 ml-4">
@@ -50,7 +49,6 @@ const Hourly = () => {
           horizontal
           data={HourlyData}
           renderItem={({ item, index }) => {
-            // console.log(index, item);
             return <HourlyItem key={index} isDay={isDay} {...item} />;
           }}
         />

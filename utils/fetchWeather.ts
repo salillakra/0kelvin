@@ -1,25 +1,28 @@
 import axios from "axios";
 import { type HourlyWeather } from "@/store/useHourlyWeather";
+import { type DailyWeather } from "@/store/useDailyWeather";
+import { type WeatherData } from "@/store/useCurrentWeather";
 
 type propstype = {
   latitude: number;
   longitude: number;
   getWeatherTitle: (code: number) => string;
-  updateWeather: (data: any) => void;
+  updateCurrentWeather: (data: WeatherData) => void;
   updateHourlyWeather: (data: HourlyWeather[]) => void;
+  updateDailyWeather: (data: DailyWeather[]) => void;
 };
 
 export const fetchWeather = async ({
   latitude,
   longitude,
   getWeatherTitle,
-  updateWeather,
+  updateCurrentWeather,
   updateHourlyWeather,
+  updateDailyWeather,
 }: propstype) => {
   const URI = `https://api.open-meteo.com/v1/forecast?current=temperature_2m,is_day,weather_code,apparent_temperature&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum,wind_speed_10m_max&timezone=Asia%2FKolkata`;
 
   try {
-    console.log("fetching weather data");
     const response = await axios.get<any>(URI, {
       params: {
         latitude: latitude,
@@ -28,12 +31,11 @@ export const fetchWeather = async ({
     });
 
     const data = response.data;
-    console.log("Weather data fetched:", data);
 
-    updateWeather({
+    updateCurrentWeather({
       temperature: data.current.temperature_2m,
-      longitude:data.longitude,
-      latitude:data.latitude,
+      longitude: data.longitude,
+      latitude: data.latitude,
       weatherCode: data.current.weather_code,
       feelsLike: data.current.apparent_temperature,
       weather: getWeatherTitle(data.current.weather_code),
@@ -58,8 +60,25 @@ export const fetchWeather = async ({
         });
       }
     });
- 
     updateHourlyWeather(temp_hourlyweather); //updating the hourly weather data
+
+    //arranging the response data
+    let temp_dailyweather = new Array<DailyWeather>();
+    data.daily.time.forEach((time: string, index: number) => {
+      temp_dailyweather.push({
+        time: time,
+        maxTemperature: data.daily.temperature_2m_max[index],
+        minTemperature: data.daily.temperature_2m_min[index],
+        weatherCode: data.daily.weather_code[index],
+        sunrise: data.daily.sunrise[index],
+        sunset: data.daily.sunset[index],
+        uvIndex: data.daily.uv_index_max[index],
+        precipitation: data.daily.precipitation_sum[index],
+        windSpeed: data.daily.wind_speed_10m_max[index],
+      });
+    });
+
+    updateDailyWeather(temp_dailyweather); //updating the daily weather data
   } catch (error: any) {
     console.error(
       "Error fetching weather data:",
