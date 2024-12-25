@@ -1,6 +1,8 @@
-import { Slot } from "expo-router";
+import { Slot, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen';
+import { AppRegistry } from 'react-native';
+import { PaperProvider } from 'react-native-paper';
 import "../global.css";
 
 
@@ -31,7 +33,10 @@ function _layout() {
 
 
     return (
-        <Slot />
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="Search" options={{ headerShown: false }} />
+        </Stack>
     )
 }
 

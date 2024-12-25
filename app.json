@@ -44,6 +44,12 @@
             "./assets/fonts/Roboto-Medium.ttf"
           ]
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow 0kelvin to use your location."
+        }
       ]
     ],
     "experiments": {

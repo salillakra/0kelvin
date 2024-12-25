@@ -1,6 +1,6 @@
 import * as React from "react";
 import Svg, { Path, Defs, LinearGradient, Stop } from "react-native-svg";
-const SvgPartyCloudyDay = (props) => (
+const PartlyCloudyDay = (props) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={props.width}
@@ -47,4 +47,4 @@ const SvgPartyCloudyDay = (props) => (
     </Defs>
   </Svg>
 );
-export default SvgPartyCloudyDay;
+export default PartlyCloudyDay;
