@@ -6,7 +6,13 @@ import { Divider } from "react-native-paper";
 
 const AirQualityMeter = ({ aqi = 50 }) => {
   // Colors based on AQI levels
-  type AQILevel = 'good' | 'moderate' | 'unhealthyForSensitiveGroups' | 'unhealthy' | 'veryUnhealthy' | 'hazardous';
+  type AQILevel =
+    | "good"
+    | "moderate"
+    | "unhealthyForSensitiveGroups"
+    | "unhealthy"
+    | "veryUnhealthy"
+    | "hazardous";
 
   const gradientColors: Record<AQILevel, string> = {
     good: "#00e400", // Green (Good)
@@ -28,23 +34,23 @@ const AirQualityMeter = ({ aqi = 50 }) => {
     let desc =
       "Air quality is considered satisfactory, and air pollution poses little or no risk.";
 
-    if (aqi <= 50) {
+    if (aqi <= 55) {
       label = "Good";
       desc =
         "Air quality is considered satisfactory, and air pollution poses little or no risk.";
-    } else if (aqi <= 100) {
+    } else if (aqi <= 155) {
       label = "Moderate";
       desc =
         "Air quality is acceptable; however, there may be a moderate health concern for some people who are unusually sensitive to air pollution.";
-    } else if (aqi <= 150) {
+    } else if (aqi <= 255) {
       label = "Unhealthy for Sensitive Groups";
       desc =
         "Members of sensitive groups may experience health effects. The general public is not likely to be affected.";
-    } else if (aqi <= 200) {
+    } else if (aqi <= 355) {
       label = "Unhealthy";
       desc =
         "Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects.";
-    } else if (aqi <= 300) {
+    } else if (aqi <= 425) {
       label = "Very Unhealthy";
       desc =
         "Health alert: everyone may experience more serious health effects.";
@@ -67,28 +73,37 @@ const AirQualityMeter = ({ aqi = 50 }) => {
             Air Quality
           </Text>
         </View>
-        <View
-          className="flex-row gap-2 justify-start items-center mt-5 p-2 rounded">
+        <View className="flex-row gap-2 justify-start items-center mt-5 p-2 rounded">
           <Text className="text-3xl font-Roboto-Regular text-gray-700">
             {aqiLabel}
           </Text>
-          <Text 
-          style={{ color: gradientColors[aqiLabel.toLowerCase().replace(/ /g, '') as AQILevel] }}
-          className="text-3xl font-Roboto-Bold text-gray-800">
+          <Text
+            style={{
+              color:
+                gradientColors[
+                  aqiLabel.toLowerCase().replace(/ /g, "") as AQILevel
+                ],
+            }}
+            className="text-3xl font-Roboto-Bold text-gray-800"
+          >
             {aqi}
           </Text>
         </View>
+        <Divider className="mt-4" />
         <Text className="mt-1 text-base font-Roboto-Regular text-gray-500 text-center">
           {description}
         </Text>
-        <View className="flex-row justify-center items-center mt-2">
-            <View
-                style={{
-                    width: 100,
-                    height: 2,
-                    backgroundColor: gradientColors[aqiLabel.toLowerCase().replace(/ /g, '') as AQILevel],
-                }}
-            />
+        <View className="flex-row justify-start items-center mt-2">
+          <View
+            style={{
+              width: (aqi / 400) * 1000,
+              height: 2,
+              backgroundColor:
+                gradientColors[
+                  aqiLabel.toLowerCase().replace(/ /g, "") as AQILevel
+                ],
+            }}
+          />
         </View>
       </View>
     </View>

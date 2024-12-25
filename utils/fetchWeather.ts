@@ -2,6 +2,7 @@ import axios from "axios";
 import { type HourlyWeather } from "@/store/useHourlyWeather";
 import { type DailyWeather } from "@/store/useDailyWeather";
 import { type WeatherData } from "@/store/useCurrentWeather";
+import { Cache, getData } from "./Cache";
 
 type propstype = {
   latitude: number;
@@ -10,6 +11,7 @@ type propstype = {
   updateCurrentWeather: (data: WeatherData) => void;
   updateHourlyWeather: (data: HourlyWeather[]) => void;
   updateDailyWeather: (data: DailyWeather[]) => void;
+  updateLoadingState: (isLoading: boolean) => void;
 };
 
 export const fetchWeather = async ({
@@ -19,18 +21,35 @@ export const fetchWeather = async ({
   updateCurrentWeather,
   updateHourlyWeather,
   updateDailyWeather,
+  updateLoadingState,
 }: propstype) => {
-  const URI = `https://api.open-meteo.com/v1/forecast?current=temperature_2m,is_day,weather_code,apparent_temperature&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum,wind_speed_10m_max&timezone=Asia%2FKolkata`;
+  const URI = `https://api.open-meteo.com/v1/forecast?current=temperature_2m,is_day,weather_code,apparent_temperature,relative_humidity_2m&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum,wind_speed_10m_max,wind_direction_10m_dominant&timezone=Asia%2FKolkata`;
 
   try {
-    const response = await axios.get<any>(URI, {
-      params: {
-        latitude: latitude,
-        longitude: longitude,
-      },
-    });
+    let data = await getData();
 
-    const data = response.data;
+    if (false) {
+    } else {
+      const response = await axios.get<any>(URI, {
+        params: {
+          latitude: latitude,
+          longitude: longitude,
+        },
+      });
+      data = response.data;
+    }
+
+    const AQI_response = await axios.get<any>(
+      "https://air-quality-api.open-meteo.com/v1/air-quality?hourly=us_aqi_pm10&timezone=Asia/Kolkata&forecast_days=7",
+      {
+        params: {
+          latitude: latitude,
+          longitude: longitude,
+        },
+      }
+    );
+
+    const AQI_data = AQI_response.data;
 
     updateCurrentWeather({
       temperature: data.current.temperature_2m,
@@ -42,6 +61,7 @@ export const fetchWeather = async ({
       high: data.daily.temperature_2m_max[0],
       low: data.daily.temperature_2m_min[0],
       isDay: data.current.is_day,
+      relative_humidity_2m: data.current.relative_humidity_2m,
     });
 
     //arranging the response data
@@ -60,6 +80,7 @@ export const fetchWeather = async ({
         });
       }
     });
+
     updateHourlyWeather(temp_hourlyweather); //updating the hourly weather data
 
     //arranging the response data
@@ -75,10 +96,18 @@ export const fetchWeather = async ({
         uvIndex: data.daily.uv_index_max[index],
         precipitation: data.daily.precipitation_sum[index],
         windSpeed: data.daily.wind_speed_10m_max[index],
+        windDirection: data.daily.wind_direction_10m_dominant[index],
+        aqi: AQI_data.hourly.us_aqi_pm10[index],
       });
     });
 
     updateDailyWeather(temp_dailyweather); //updating the daily weather data
+
+    // Cache the weather data
+    Cache(data);
+
+    //loading false
+    updateLoadingState(false);
   } catch (error: any) {
     console.error(
       "Error fetching weather data:",

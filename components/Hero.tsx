@@ -1,11 +1,12 @@
 import { Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useCurrentWeatherStore } from "@/store/useCurrentWeather";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
 import { fetchWeather } from "@/utils/fetchWeather";
 import * as Location from "expo-location";
 import { useHourlyWeatherStore } from "@/store/useHourlyWeather";
 import { useDailyWeatherStore } from "@/store/useDailyWeather";
+import { useLoadingStatus } from "@/store/useloading";
 
 const Hero = () => {
   //using the CustomHook to get the Icon (in Hooks folder)
@@ -16,10 +17,14 @@ const Hero = () => {
     (state) => state.CurrentWeather
   );
 
+
   const updateCurrentWeather = useCurrentWeatherStore((state) => state.update);
   const updateHourlyWeather = useHourlyWeatherStore((state) => state.update);
   const updateDailyWeather = useDailyWeatherStore((state) => state.update);
+  const updateLoadingState = useLoadingStatus((state) => state.update);
 
+
+  //using the useEffect hook to get the current location and fetch the weather data
   useEffect(() => {
     async function getCurrentLocation() {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -38,6 +43,7 @@ const Hero = () => {
           updateCurrentWeather: updateCurrentWeather,
           updateHourlyWeather: updateHourlyWeather,
           updateDailyWeather: updateDailyWeather,
+          updateLoadingState: updateLoadingState,
         });
       } else {
         console.log("Location is not available");

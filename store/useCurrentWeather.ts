@@ -11,6 +11,7 @@ export interface WeatherData {
   isDay: number;
   high: number;
   low: number;
+  relative_humidity_2m: number;
 }
 
 interface CurrentWeatherState {
@@ -30,6 +31,7 @@ export const useCurrentWeatherStore = create<CurrentWeatherState>((set) => ({
     weather: "Partly Cloudy",
     high: 22,
     low: 12,
+    relative_humidity_2m: 0,
   },
   // Setters
   update: (data: WeatherData) =>
