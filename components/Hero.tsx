@@ -65,8 +65,11 @@ const Hero = () => {
             })}
           </View>
           <View className="flex-row mt-2">
-            <Text className="text-lg font-Roboto-Medium text-gray-600 mr-4">
+            <Text className="text-lg font-Roboto-Medium text-gray-600 ">
               High: {parseInt(CurrentWeather.high.toString())}&#176;
+            </Text>
+            <Text className="text-lg mx-1 font-Roboto-Bold text-gray-600">
+              ⋅
             </Text>
             <Text className="text-lg font-Roboto-Medium text-gray-600">
               Low: {parseInt(CurrentWeather.low.toString())}&#176;

@@ -1,12 +1,10 @@
 import { View, Text, FlatList } from "react-native";
 import React from "react";
-import { PartlyCloudyDay } from "@/icons";
 import {
   type DailyWeather,
   useDailyWeatherStore,
 } from "@/store/useDailyWeather";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
-import { Divider } from "react-native-paper";
 
 const ForecastElement = (props: DailyWeather) => {
   const { getWeatherIcon } = useWeatherCode();
@@ -21,7 +19,7 @@ const ForecastElement = (props: DailyWeather) => {
           })}
         </Text>
       </View>
-      <View className="flex flex-row items-center gap-20">
+      <View className="flex flex-row items-center w-1/2 justify-between">
         <View className="p-2 rounded-full bg-green-50">
           {getWeatherIcon({
             WeatherCode: props.weatherCode,

@@ -48,11 +48,11 @@ export const fetchWeather = async ({
     let temp_hourlyweather = new Array<HourlyWeather>();
     data.hourly.time.forEach((time: string, index: number) => {
       //checking the current time
-      const currentHour = new Date().getHours();
-      const serverHour = new Date(time).getHours();
+      const CurrentTime = new Date().getTime();
+      const ServerTime = new Date(time).getTime();
 
       //only pushing the data for the current hour and the future hours
-      if (currentHour <= serverHour && index < 24) {
+      if (CurrentTime <= ServerTime && temp_hourlyweather.length < 25) {
         temp_hourlyweather.push({
           time: time,
           temperature: data.hourly.temperature_2m[index],

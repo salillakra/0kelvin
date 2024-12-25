@@ -27,7 +27,8 @@ const ReverseGeocoding = async (
     },
   });
   const data = response.data;
-  setPlace(data.address.city);
+  console.log("Location",data)
+  setPlace(data.address.state_district || data.address.city || data.address.statea);
 };
 
 const Header = () => {

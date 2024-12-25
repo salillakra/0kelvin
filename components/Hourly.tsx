@@ -9,16 +9,19 @@ const HourlyItem = (props: {
   weatherCode: number;
   isDay: number;
   temperature: number;
+  index: number;
 }) => {
   const { getWeatherIcon } = useWeatherCode();
   return (
     <View className="items-center bg-transparent flex my-4 gap-2 mx-1 flex-col-reverse justify-center px-3  w-20">
       <Text className="text-base font-Roboto-Regular  mb-2">
-        {new Date(props.time).toLocaleTimeString("en-US", {
-          hour: "numeric",
-          minute: "numeric",
-          hour12: false,
-        })}
+        {props.index === 0
+          ? "Now"
+          : new Date(props.time).toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "numeric",
+              hour12: false,
+            })}
       </Text>
       <View className="bg-green-50 rounded-full p-2 mb-2">
         {getWeatherIcon({
@@ -29,7 +32,7 @@ const HourlyItem = (props: {
         })}
       </View>
       <Text className="text-base font-Roboto-Regular mb-2">
-        {props.temperature}
+        {parseInt(props.temperature.toString())}
         {"°C"}
       </Text>
     </View>
@@ -49,7 +52,11 @@ const Hourly = () => {
           horizontal
           data={HourlyData}
           renderItem={({ item, index }) => {
-            return <HourlyItem key={index} isDay={isDay} {...item} />;
+            if (true) {
+              return (
+                <HourlyItem index={index} key={index} isDay={isDay} {...item} />
+              );
+            }
           }}
         />
       </View>
