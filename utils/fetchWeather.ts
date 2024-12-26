@@ -28,7 +28,8 @@ export const fetchWeather = async ({
   try {
     let data = await getData();
 
-    if (false) {
+    if (data) {
+      console.log("Data fetched from cache");
     } else {
       const response = await axios.get<any>(URI, {
         params: {
@@ -38,6 +39,7 @@ export const fetchWeather = async ({
       });
       data = response.data;
     }
+
 
     const AQI_response = await axios.get<any>(
       "https://air-quality-api.open-meteo.com/v1/air-quality?hourly=us_aqi_pm10&timezone=Asia/Kolkata&forecast_days=7",

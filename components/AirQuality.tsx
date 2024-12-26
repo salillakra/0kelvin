@@ -65,8 +65,8 @@ const AirQualityMeter = ({ aqi = 50 }) => {
   }, [aqi]);
 
   return (
-    <View className="flex-1 justify-center px-4 mt-10 items-center bg-gray-100">
-      <View className=" p-4 bg-white rounded-lg container">
+    <View className="flex-1 justify-center px-4 my-10 items-center">
+      <View className=" p-4 bg-[rgba(225,225,225,0.65)] rounded-lg container">
         <View className="flex-row gap-2 justify-start items-center">
           <Entypo name="air" size={24} color="black" />
           <Text className="text-xl font-Roboto-Regular text-gray-800">
@@ -93,11 +93,12 @@ const AirQualityMeter = ({ aqi = 50 }) => {
         <Text className="mt-1 text-base font-Roboto-Regular text-gray-500 text-center">
           {description}
         </Text>
-        <View className="flex-row justify-start items-center mt-2">
+        <View className="flex-row justify-start items-center mt-5">
           <View
+          className=" rounded-3xl"
             style={{
               width: (aqi / 400) * 1000,
-              height: 2,
+              height: 3.5,
               backgroundColor:
                 gradientColors[
                   aqiLabel.toLowerCase().replace(/ /g, "") as AQILevel

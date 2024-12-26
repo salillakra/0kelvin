@@ -1,7 +1,6 @@
 import { Text, View, FlatList } from "react-native";
 import React from "react";
 import { useHourlyWeatherStore } from "@/store/useHourlyWeather";
-import { useCurrentWeatherStore } from "@/store/useCurrentWeather";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
 
 const HourlyItem = (props: {
@@ -12,6 +11,7 @@ const HourlyItem = (props: {
   index: number;
 }) => {
   const { getWeatherIcon } = useWeatherCode();
+
   return (
     <View className="items-center bg-transparent flex my-4 gap-2 mx-1 flex-col-reverse justify-center px-3  w-20">
       <Text className="text-base font-Roboto-Regular  mb-2">
@@ -41,7 +41,18 @@ const HourlyItem = (props: {
 
 const Hourly = () => {
   const HourlyData = useHourlyWeatherStore((state) => state.hourlyWeather);
-  const isDay = useCurrentWeatherStore((state) => state.CurrentWeather.isDay);
+
+  const isDayCheck = (time: string) => {
+    const ServerTime = new Date(time).getHours(); // Get the hour part of the time
+    const startTime = 6; 
+    const endTime = 18; 
+  
+    if (ServerTime >= startTime && ServerTime < endTime) {
+      return 1; // Daytime
+    }
+    return 0; // Nighttime
+  };
+  
   return (
     <View className="mt-10">
       <Text className="text-xl font-Roboto-Bold mb-3 ml-4">
@@ -52,11 +63,14 @@ const Hourly = () => {
           horizontal
           data={HourlyData}
           renderItem={({ item, index }) => {
-            if (true) {
-              return (
-                <HourlyItem index={index} key={index} isDay={isDay} {...item} />
-              );
-            }
+            return (
+              <HourlyItem
+                index={index}
+                key={index}
+                isDay={isDayCheck(item.time)}
+                {...item}
+              />
+            );
           }}
         />
       </View>

@@ -27,7 +27,6 @@ const ReverseGeocoding = async (
     },
   });
   const data = response.data;
-  console.log("Location",data)
   setPlace(data.address.state_district || data.address.city || data.address.statea);
 };
 
@@ -53,7 +52,7 @@ const Header = () => {
         </View>
 
         <View className="fles gap-3 flex-row justify-end items-center">
-          <Link href="/Search">
+          <Link href="/search">
             <MagnifyingGlassIcon color={"rgb(0,0,0)"} size={30} />
           </Link>
           <TouchableOpacity>

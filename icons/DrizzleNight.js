@@ -12,7 +12,7 @@ const SvgDrizzleNight = (props) => (
     <Path
       fill="url(#Drizzle_night_svg__a)"
       fillRule="evenodd"
-      d="M27.07 12.173a5.202 5.202 0 0 0-7.7-6.883 10 10 0 0 0-1.706-1.138 7.202 7.202 0 0 1 10.607 9.733 7 7 0 0 0-1.202-1.712"
+      d="M29.818 8.767c.213-.797.236-1.6.096-2.36a2.812 2.812 0 0 1-4.423.99 2.16 2.16 0 0 1-.803-1.168l-.008-.031a2.812 2.812 0 0 1 2.207-3.7 5.37 5.37 0 0 0-7.285 2.986 10 10 0 0 1 1.656 1.871 3.39 3.39 0 0 1 1.437-2.742 4.214 4.214 0 0 0 4.21 5.253 3.37 3.37 0 0 1-4.351.17q.147.474.246.966a6 6 0 0 1 3.949 1.313 5.36 5.36 0 0 0 3.069-3.548"
       clipRule="evenodd"
     />
     <Path
@@ -24,14 +24,14 @@ const SvgDrizzleNight = (props) => (
     <Defs>
       <LinearGradient
         id="Drizzle_night_svg__a"
-        x1={23.832}
-        x2={23.832}
+        x1={24.802}
+        x2={24.802}
         y1={2}
-        y2={13.885}
+        y2={12.315}
         gradientUnits="userSpaceOnUse"
       >
-        <Stop stopColor="#EFC977" />
-        <Stop offset={1} stopColor="#E07256" />
+        <Stop stopColor="#F5BD52" />
+        <Stop offset={1} stopColor="#F5DA79" />
       </LinearGradient>
       <LinearGradient
         id="Drizzle_night_svg__b"

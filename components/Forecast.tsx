@@ -1,15 +1,20 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import React from "react";
 import {
   type DailyWeather,
   useDailyWeatherStore,
 } from "@/store/useDailyWeather";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
+import { useRouter } from "expo-router";
 
 const ForecastElement = (props: DailyWeather) => {
+  const router = useRouter();
   const { getWeatherIcon } = useWeatherCode();
+  const redirect = (time: string) => {
+    router.push(`/(tabs)/forecast/${props.time}`);
+  };
   return (
-    <View className="flex my-1 rounded-2xl bg-[rgba(225,225,225,0.65)] flex-row justify-between items-center px-4 py-1">
+    <TouchableOpacity onPress={() => redirect(props.time)} className="flex my-1 rounded-2xl bg-[rgba(225,225,225,0.65)] flex-row justify-between items-center px-4 py-1">
       <View className="flex flex-col items-start">
         <Text className="font-Roboto-Regular text-gray-700 text-lg">
           {new Date(props.time).toLocaleDateString("en-IN", {
@@ -39,13 +44,12 @@ const ForecastElement = (props: DailyWeather) => {
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const Forecast = () => {
   const DailyData = useDailyWeatherStore((state) => state.data);
-  console.log(DailyData);
   return (
     <View>
       <View className="pl-5 mt-10">

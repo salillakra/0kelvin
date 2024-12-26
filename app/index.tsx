@@ -11,18 +11,21 @@ import LoadingScreen from "@/components/Loading";
 import WeatherConditions from "@/components/CurrentConditions";
 import { useCurrentWeatherStore } from "@/store/useCurrentWeather";
 import SunriseSunset from "@/components/SunriseSunset";
+import WeatherTips from "@/components/WeatherTips";
 
 const App = () => {
-  const dailyWeather = useDailyWeatherStore((state) => state.data);
   const isLoading = useLoadingStatus((state) => state.isLoading);
+  const dailyWeather = useDailyWeatherStore((state) => state.data);
+  const hourlyWeather = useDailyWeatherStore((state) => state.data);
   const currentWeather = useCurrentWeatherStore(
     (state) => state.CurrentWeather
   );
 
-  const data = {
+  const data = JSON.stringify({
     dailyWeather: dailyWeather,
     currentWeather: currentWeather,
-  };
+    hourlyWeather: hourlyWeather,
+  });
 
   return (
     <SafeAreaProvider>
@@ -51,6 +54,7 @@ const App = () => {
             sunrise={dailyWeather[0].sunrise}
             sunset={dailyWeather[0].sunset}
           /> */}
+          <WeatherTips WeatherData={currentWeather.aiTips} />
         </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
