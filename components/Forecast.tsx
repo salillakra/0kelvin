@@ -8,11 +8,19 @@ import { useWeatherCode } from "@/hooks/useWeatherCode";
 import { useRouter } from "expo-router";
 import { useForcastIndexDate } from "@/store/useForcastDayDate";
 
-const ForecastElement = (props: DailyWeather) => {
+
+
+interface ForecastElementProps extends DailyWeather {
+  index: number;
+}
+
+const ForecastElement = (props: ForecastElementProps) => {
   const router = useRouter();
   const setDate = useForcastIndexDate((state) => state.setForcastIndexDate);
+  const setIndex = useForcastIndexDate((state) => state.setIndex);
   const { getWeatherIcon } = useWeatherCode();
   const redirect = (time: string) => {
+    setIndex(props.index);
     router.push("/dailyTab");
     setDate(time);
   };
@@ -63,7 +71,7 @@ const Forecast = () => {
         <FlatList
           data={DailyData}
           renderItem={({ item, index }) => {
-            return <ForecastElement key={index} {...item} />;
+            return <ForecastElement key={index} index={index} {...item} />;
           }}
         />
       </View>

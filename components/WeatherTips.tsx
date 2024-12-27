@@ -83,6 +83,8 @@ const WeatherTips = ({ WeatherData }: { WeatherData: string }) => {
               className="w-8 h-8 object-cover"
               alt="0kelvin icon"
               key="0kelvin icon"
+              height={32}
+              width={32}
               source={require("@/assets/images/icon.png")}
             />
             <Text className="text-center text-2xl text-blue-800 font-bold">

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import {
   FlatList,
+  Platform,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -26,13 +27,17 @@ interface TabsData {
 }
 
 const DateLayout: React.FC<TabsData> = (props) => {
+  const setIndex = useForcastIndexDate((state) => state.setIndex);
   const { getWeatherIcon } = useWeatherCode();
   return (
     <TouchableOpacity
       onPress={() => {
         props.onSelect(props.index);
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+        if (Platform.OS === "ios" || Platform.OS === "android") {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);          
+        }
         props.setDate(props.date);
+        setIndex(props.index);
       }}
       className="flex-1 relative mx-2 items-center flex-col px-1 bg-gray-300 rounded-xl gap-1 justify-center h-32 w-20"
     >
@@ -45,8 +50,8 @@ const DateLayout: React.FC<TabsData> = (props) => {
       <View className="rounded-full bg-green-50 p-2">
         {getWeatherIcon({
           WeatherCode: props.WeatherCode,
-          height: 24,
-          width: 24,
+          height: 30,
+          width: 30,
           IsDay: 1,
         })}
       </View>
@@ -75,6 +80,7 @@ export default function DailyTab() {
   const date = useForcastIndexDate((state) => state.forcastIndexDate);
   const setDate = useForcastIndexDate((state) => state.setForcastIndexDate);
   const flatListRef = useRef<FlatList>(null);
+  const GlobalIndex = useForcastIndexDate((state) => state.index);
 
   const handleSelect = (index: number) => {
     setSelected(index);
@@ -114,7 +120,7 @@ export default function DailyTab() {
               WeatherCode={item.weatherCode}
               MaxTemp={item.maxTemperature}
               MinTemp={item.minTemperature}
-              isSelected={selected === index}
+              isSelected={index === GlobalIndex}
               onSelect={handleSelect}
             />
           )}
@@ -125,7 +131,7 @@ export default function DailyTab() {
             offset: 84.3 * index,
             index,
           })}
-          initialScrollIndex={selected ?? 0}
+          initialScrollIndex={GlobalIndex}
           onScrollToIndexFailed={scrollToValidIndex}
         />
       </View>

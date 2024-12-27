@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Slot, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import "../global.css";
@@ -27,11 +27,5 @@ export default function _layout() {
     return null;
   }
 
-  return (
-    <Stack>
-      <Stack.Screen name="search" options={{ headerShown: false }} />
-      <Stack.Screen name="dailyTab" options={{ headerShown: false }} />
-      <Stack.Screen name="main" options={{ headerShown: false }} />
-    </Stack>
-  );
+  return <Slot />;
 }

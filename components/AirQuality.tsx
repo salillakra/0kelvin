@@ -65,7 +65,7 @@ const AirQualityMeter = ({ aqi = 50 }) => {
   }, [aqi]);
 
   return (
-    <View className="flex-1 justify-center px-4 my-10 items-center">
+    <View className="flex justify-center px-4 my-10 items-center">
       <View className=" p-4 bg-[rgba(225,225,225,0.65)] rounded-lg container">
         <View className="flex-row gap-2 justify-start items-center">
           <Entypo name="air" size={24} color="black" />
