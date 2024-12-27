@@ -5,7 +5,7 @@ import { useDailyWeatherStore } from "@/store/useDailyWeather";
 import * as Haptics from "expo-haptics";
 import { Slot, useRouter } from "expo-router";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
-import Animated, { Easing, withTiming } from "react-native-reanimated"; // import Animated from react-native-reanimated
+import Animated from "react-native-reanimated"; // import Animated from react-native-reanimated
 
 interface TabsData {
   date: string;
