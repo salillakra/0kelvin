@@ -6,12 +6,15 @@ import {
 } from "@/store/useDailyWeather";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
 import { useRouter } from "expo-router";
+import { useForcastIndexDate } from "@/store/useForcastDayDate";
 
 const ForecastElement = (props: DailyWeather) => {
   const router = useRouter();
+  const setDate = useForcastIndexDate((state) => state.setForcastIndexDate);
   const { getWeatherIcon } = useWeatherCode();
   const redirect = (time: string) => {
-    router.push(`/(tabs)/forecast/${props.time}`);
+    router.push("/dailyTab");
+    setDate(time);
   };
   return (
     <TouchableOpacity onPress={() => redirect(props.time)} className="flex my-1 rounded-2xl bg-[rgba(225,225,225,0.65)] flex-row justify-between items-center px-4 py-1">
@@ -54,7 +57,7 @@ const Forecast = () => {
     <View>
       <View className="pl-5 mt-10">
         <Text className="font-Roboto-Bold text-2xl">Forecast</Text>
-        <Text className="font-Roboto-Thin text-xs">Next 7 days</Text>
+        <Text className="font-Roboto-Thin text-xs">Next 14 days</Text>
       </View>
       <View className="flex flex-col px-4 mt-2">
         <FlatList

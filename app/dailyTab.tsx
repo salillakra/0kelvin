@@ -1,11 +1,18 @@
-import React, { useRef } from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
-import { Appbar, Divider } from "react-native-paper";
+import React, { useRef, useState } from "react";
+import {
+  FlatList,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Divider } from "react-native-paper";
 import { useDailyWeatherStore } from "@/store/useDailyWeather";
 import * as Haptics from "expo-haptics";
-import { Slot, useRouter } from "expo-router";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
 import Animated from "react-native-reanimated";
+import DailyForcast from "@/components/DailyForcast";
+import { useForcastIndexDate } from "@/store/useForcastDayDate";
 
 interface TabsData {
   date: string;
@@ -14,21 +21,18 @@ interface TabsData {
   MinTemp: number;
   index: number;
   isSelected: boolean;
+  setDate: (date: string) => void;
   onSelect: (index: number) => void;
 }
 
 const DateLayout: React.FC<TabsData> = (props) => {
-  const router = useRouter()
   const { getWeatherIcon } = useWeatherCode();
-  const redirect = (time: string) => {
-    router.push(`/(tabs)/forecast/${props.date}`);
-  };
   return (
     <TouchableOpacity
       onPress={() => {
         props.onSelect(props.index);
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-        redirect(props.date);
+        props.setDate(props.date);
       }}
       className="flex-1 relative mx-2 items-center flex-col px-1 bg-gray-300 rounded-xl gap-1 justify-center h-32 w-20"
     >
@@ -65,11 +69,12 @@ const DateLayout: React.FC<TabsData> = (props) => {
   );
 };
 
-export default function TabLayout() {
+export default function DailyTab() {
   const dailyWeatherData = useDailyWeatherStore((state) => state.data);
-  const [selected, setSelected] = React.useState<number | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
+  const date = useForcastIndexDate((state) => state.forcastIndexDate);
+  const setDate = useForcastIndexDate((state) => state.setForcastIndexDate);
   const flatListRef = useRef<FlatList>(null);
-  const router = useRouter();
 
   const handleSelect = (index: number) => {
     setSelected(index);
@@ -94,20 +99,16 @@ export default function TabLayout() {
   };
 
   return (
-    <>
-      <TouchableOpacity onPress={() => {
-        router.push("/main");
-      }}>
-        <Text className="text-6xl">{"<"}</Text>
-      </TouchableOpacity>
+    <ScrollView>
       <View className="flex mx-4 flex-row mt-5">
-        <Animated.FlatList 
+        <Animated.FlatList
           ref={flatListRef}
           data={dailyWeatherData}
-          pagingEnabled={false} 
+          pagingEnabled={false}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item, index }) => (
             <DateLayout
+              setDate={setDate}
               index={index}
               date={item.time}
               WeatherCode={item.weatherCode}
@@ -124,12 +125,12 @@ export default function TabLayout() {
             offset: 84.3 * index,
             index,
           })}
-          initialScrollIndex={selected ?? 0} 
+          initialScrollIndex={selected ?? 0}
           onScrollToIndexFailed={scrollToValidIndex}
         />
       </View>
       <Divider bold className="my-4" />
-      <Slot />
-    </>
+      <DailyForcast date={date} />
+    </ScrollView>
   );
 }

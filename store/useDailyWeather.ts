@@ -12,6 +12,7 @@ export interface DailyWeather {
   precipitation: number;
   windSpeed: number;
   windDirection: number;
+  snowfall_sum?: number;
 }
 
 interface DailyWeatherState {

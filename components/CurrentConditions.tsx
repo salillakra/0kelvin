@@ -28,8 +28,9 @@ const ConditionCard: React.FC<ConditionCardProps> = ({
 interface WeatherConditionsProps {
   wind_speed: number;
   wind_direction: string;
-  relative_humidity: number;
-  Temp: number;
+  relative_humidity?: number;
+  snowfall_sum?: number;
+  Temp?: number;
   uvIndex: number;
   precipitation: string;
 }
@@ -72,6 +73,20 @@ const precipitationComment = (precipitation: number) => {
   }
 };
 
+const snowfall_sumComment = (snowfall_sum: number) => {
+  if (snowfall_sum === 0) {
+    return "No snow";
+  } else if (snowfall_sum < 1) {
+    return "No snow? Stay cozy indoors!";
+  } else if (snowfall_sum < 5) {
+    return "Light snow, perfect for a stroll!";
+  } else if (snowfall_sum < 10) {
+    return "Moderate snow, grab your snow boots!";
+  } else {
+    return "Heavy snow, time to build an igloo!";
+  }
+};
+
 const WeatherConditions: React.FC<WeatherConditionsProps> = (
   props: WeatherConditionsProps
 ) => {
@@ -88,12 +103,22 @@ const WeatherConditions: React.FC<WeatherConditionsProps> = (
             subtitle={DegreeToDirection(parseInt(props.wind_direction))}
             icon="wind"
           />
-          <ConditionCard
-            title="Humidity"
-            value={`${props.relative_humidity || "5"} %`}
-            subtitle={`Dew point ${props.Temp.toString().slice(0, 4)}` + "°C"}
-            icon="droplet"
-          />
+          {(props.relative_humidity !== undefined) && (
+            <ConditionCard
+              title="Humidity"
+              value={`${props.relative_humidity} %`}
+              subtitle={`Dew point ${props.Temp?.toFixed(1)}°C`}
+              icon="droplet"
+            />
+          )}
+          {(props.snowfall_sum ?? -1) >= 0 && (
+            <ConditionCard
+              title="Snowfall"
+              value={`${props.snowfall_sum} cm`}
+              subtitle={snowfall_sumComment(props.snowfall_sum || 0)}
+              icon="cloud-snow"
+            />
+          )}
         </View>
         <View className="flex flex-row gap-4">
           <ConditionCard

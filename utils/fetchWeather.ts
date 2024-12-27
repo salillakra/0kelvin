@@ -25,7 +25,7 @@ export const fetchWeather = async ({
   updateLoadingState,
   updatedailyHourlyForecast,
 }: propstype) => {
-  const URI = `https://api.open-meteo.com/v1/forecast?current=temperature_2m,is_day,weather_code,apparent_temperature,relative_humidity_2m&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum,wind_speed_10m_max,wind_direction_10m_dominant&timezone=Asia%2FKolkata`;
+  const URI = `https://api.open-meteo.com/v1/forecast?current=temperature_2m,is_day,weather_code,apparent_temperature,relative_humidity_2m&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum,wind_speed_10m_max,snowfall_sum,wind_direction_10m_dominant&timezone=Asia%2FKolkata`;
 
   try {
     updateLoadingState(true);
@@ -117,6 +117,7 @@ export const fetchWeather = async ({
         windSpeed: data.daily.wind_speed_10m_max[index],
         windDirection: data.daily.wind_direction_10m_dominant[index],
         aqi: AQI_data.hourly.us_aqi_pm10[index],
+        snowfall_sum: data.daily.snowfall_sum[index],
       });
     });
 
