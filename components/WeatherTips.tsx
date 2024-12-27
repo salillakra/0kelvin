@@ -7,10 +7,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 const WeatherTips = ({ WeatherData }: { WeatherData: string }) => {
+  const [weatherData, setWeatherData] = useState<string>("");
   const [weatherTip, setWeatherTip] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchWeatherTip = async () => {
+    setWeatherData(WeatherData); // set the weather data to the state
     try {
       const cachedTip = await AsyncStorage.getItem("weatherTip");
       if (cachedTip) {
@@ -56,8 +58,24 @@ const WeatherTips = ({ WeatherData }: { WeatherData: string }) => {
     fetchWeatherTip();
   }, []);
 
+  //cleaning cache
+  useEffect(() => {
+    const clearCache = async () => {
+      try {
+        await AsyncStorage.removeItem("weatherTip");
+      } catch (e) {
+        console.log("Error clearing cache", e);
+      }
+    };
+  
+    // Clear cache after a set interval 
+    const cacheClearInterval = setInterval(clearCache, 24 * 60 * 60 * 1000);
+    return () => clearInterval(cacheClearInterval); // Cleanup on unmount
+  }, []);
+  
+
   return (
-    <View className="flex-1 bg-blue-100 p-6">
+    <View className="flex-1 bg-blue-100 px-3 py-6">
       <Card className="mb-6 rounded-xl shadow-lg">
         <Card.Content>
           <View className="flex-row gap-4  items-center">

@@ -2,7 +2,7 @@ import axios from "axios";
 import { type HourlyWeather } from "@/store/useHourlyWeather";
 import { type DailyWeather } from "@/store/useDailyWeather";
 import { type WeatherData } from "@/store/useCurrentWeather";
-import { Cache, getData } from "./Cache";
+import { setCache, getCache } from "./Cache";
 
 type propstype = {
   latitude: number;
@@ -26,7 +26,7 @@ export const fetchWeather = async ({
   const URI = `https://api.open-meteo.com/v1/forecast?current=temperature_2m,is_day,weather_code,apparent_temperature,relative_humidity_2m&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum,wind_speed_10m_max,wind_direction_10m_dominant&timezone=Asia%2FKolkata`;
 
   try {
-    let data = await getData();
+    let data = await getCache();
 
     if (data) {
       console.log("Data fetched from cache");
@@ -35,11 +35,15 @@ export const fetchWeather = async ({
         params: {
           latitude: latitude,
           longitude: longitude,
+          forecast_days: 14,
+        },
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": "0Kelvin/1.0",
         },
       });
       data = response.data;
     }
-
 
     const AQI_response = await axios.get<any>(
       "https://air-quality-api.open-meteo.com/v1/air-quality?hourly=us_aqi_pm10&timezone=Asia/Kolkata&forecast_days=7",
@@ -106,7 +110,7 @@ export const fetchWeather = async ({
     updateDailyWeather(temp_dailyweather); //updating the daily weather data
 
     // Cache the weather data
-    Cache(data);
+    setCache(data);
 
     //loading false
     updateLoadingState(false);
