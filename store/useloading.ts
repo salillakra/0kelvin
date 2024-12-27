@@ -6,6 +6,6 @@ export interface LoadingState {
 }
 
 export const useLoadingStatus = create<LoadingState>((set) => ({
-  isLoading: true,
+  isLoading: false,
   update: (isLoading: boolean) => set({ isLoading }),
 }));

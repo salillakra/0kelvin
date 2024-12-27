@@ -83,7 +83,7 @@ const WeatherConditions: React.FC<WeatherConditionsProps> = (
       <View className="flex flex-col gap-4 items-center justify-between">
         <View className="flex flex-row justify-between gap-4">
           <ConditionCard
-            title="Wind"
+            title="Max Wind"
             value={`${props.wind_speed} km/h`}
             subtitle={DegreeToDirection(parseInt(props.wind_direction))}
             icon="wind"

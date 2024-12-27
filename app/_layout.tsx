@@ -29,9 +29,9 @@ export default function _layout() {
 
   return (
     <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="search" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="dailyTab" options={{ headerShown: false }} />
+      <Stack.Screen name="main" options={{ headerShown: false }} />
     </Stack>
   );
 }

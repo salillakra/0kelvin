@@ -1,11 +1,11 @@
 import React, { useRef } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
-import { Divider } from "react-native-paper";
+import { Appbar, Divider } from "react-native-paper";
 import { useDailyWeatherStore } from "@/store/useDailyWeather";
 import * as Haptics from "expo-haptics";
 import { Slot, useRouter } from "expo-router";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
-import Animated from "react-native-reanimated"; // import Animated from react-native-reanimated
+import Animated from "react-native-reanimated";
 
 interface TabsData {
   date: string;
@@ -69,6 +69,7 @@ export default function TabLayout() {
   const dailyWeatherData = useDailyWeatherStore((state) => state.data);
   const [selected, setSelected] = React.useState<number | null>(null);
   const flatListRef = useRef<FlatList>(null);
+  const router = useRouter();
 
   const handleSelect = (index: number) => {
     setSelected(index);
@@ -94,6 +95,11 @@ export default function TabLayout() {
 
   return (
     <>
+      <TouchableOpacity onPress={() => {
+        router.push("/main");
+      }}>
+        <Text className="text-6xl">{"<"}</Text>
+      </TouchableOpacity>
       <View className="flex mx-4 flex-row mt-5">
         <Animated.FlatList 
           ref={flatListRef}

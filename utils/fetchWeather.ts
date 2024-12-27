@@ -12,6 +12,7 @@ type propstype = {
   updateHourlyWeather: (data: HourlyWeather[]) => void;
   updateDailyWeather: (data: DailyWeather[]) => void;
   updateLoadingState: (isLoading: boolean) => void;
+  updatedailyHourlyForecast: (data: HourlyWeather[]) => void;
 };
 
 export const fetchWeather = async ({
@@ -22,10 +23,12 @@ export const fetchWeather = async ({
   updateHourlyWeather,
   updateDailyWeather,
   updateLoadingState,
+  updatedailyHourlyForecast,
 }: propstype) => {
   const URI = `https://api.open-meteo.com/v1/forecast?current=temperature_2m,is_day,weather_code,apparent_temperature,relative_humidity_2m&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum,wind_speed_10m_max,wind_direction_10m_dominant&timezone=Asia%2FKolkata`;
 
   try {
+    updateLoadingState(true);
     let data = await getCache();
 
     if (data) {
@@ -71,7 +74,8 @@ export const fetchWeather = async ({
     });
 
     //arranging the response data
-    let temp_hourlyweather = new Array<HourlyWeather>();
+    let temp_hourlyweather = new Array<HourlyWeather>(); // for hourly forecast i.e 24 hours from this.time to next 24 hours
+    let temp_dailyhourlyforecast = new Array<HourlyWeather>(); //for daily hourly forecast i.e all the hourly of 14 days
     data.hourly.time.forEach((time: string, index: number) => {
       //checking the current time
       const CurrentTime = new Date().getTime();
@@ -85,9 +89,18 @@ export const fetchWeather = async ({
           weatherCode: data.hourly.weather_code[index],
         });
       }
+
+      //pushing all the hourly data for the coming 14 days
+      temp_dailyhourlyforecast.push({
+        time: time,
+        temperature: data.hourly.temperature_2m[index],
+        weatherCode: data.hourly.weather_code[index],
+      });
     });
 
     updateHourlyWeather(temp_hourlyweather); //updating the hourly weather data
+    updatedailyHourlyForecast(temp_dailyhourlyforecast); //updating the daily hourly forecast data
+
 
     //arranging the response data
     let temp_dailyweather = new Array<DailyWeather>();
@@ -115,6 +128,7 @@ export const fetchWeather = async ({
     //loading false
     updateLoadingState(false);
   } catch (error: any) {
+    updateLoadingState(false);
     console.error(
       "Error fetching weather data:",
       error.message,

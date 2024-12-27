@@ -1,67 +1,16 @@
 import { Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useCurrentWeatherStore } from "@/store/useCurrentWeather";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
-import { fetchWeather } from "@/utils/fetchWeather";
-import * as Location from "expo-location";
-import { useHourlyWeatherStore } from "@/store/useHourlyWeather";
-import { useDailyWeatherStore } from "@/store/useDailyWeather";
-import { useLoadingStatus } from "@/store/useloading";
-import { clearCache } from "@/utils/Cache";
 
 const Hero = () => {
   //using the CustomHook to get the Icon (in Hooks folder)
-  const { getWeatherIcon, getWeatherTitle } = useWeatherCode();
-  const [location, setLocation] = useState({
-    latitude: 0,
-    longitude: 0,
-  });
+  const { getWeatherIcon } = useWeatherCode();
 
   //using the zustand store to get the current weather data
   const CurrentWeather = useCurrentWeatherStore(
     (state) => state.CurrentWeather
   );
-
-  const updateCurrentWeather = useCurrentWeatherStore((state) => state.update);
-  const updateHourlyWeather = useHourlyWeatherStore((state) => state.update);
-  const updateDailyWeather = useDailyWeatherStore((state) => state.update);
-  const updateLoadingState = useLoadingStatus((state) => state.update);
-
-  //using the useEffect hook to get the current location and fetch the weather data
-  useEffect(() => {
-    async function getCurrentLocation() {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        alert("Please enable location access to get the weather data");
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-
-      if (location) {
-        setLocation(location.coords); //setting the location state
-
-        //fetching the weather data
-        await fetchWeather({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          getWeatherTitle: getWeatherTitle,
-          updateCurrentWeather: updateCurrentWeather,
-          updateHourlyWeather: updateHourlyWeather,
-          updateDailyWeather: updateDailyWeather,
-          updateLoadingState: updateLoadingState,
-        });
-      } else {
-        console.log("Location is not available");
-      }
-    }
-    getCurrentLocation();
-  }, []);
-
-  //clearing the cache when the location changes
-  useEffect(() => {
-    clearCache();
-  }, [location]);
 
   return (
     <>
