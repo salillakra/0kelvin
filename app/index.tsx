@@ -22,6 +22,7 @@ import * as Location from "expo-location";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
 
 const App = () => {
+  const [LocalLoading, setLocalLoading] = useState(true);
   const [location, setLocation] = useState({
     latitude: 0,
     longitude: 0,
@@ -29,7 +30,6 @@ const App = () => {
   //using the CustomHook to get the Icon (in Hooks folder)
   const { getWeatherTitle } = useWeatherCode();
 
-  const isLoading = useLoadingStatus((state) => state.isLoading);
   const dailyWeather = useDailyWeatherStore((state) => state.data);
   const hourlyWeather = useHourlyWeatherStore((state) => state.hourlyWeather);
   const currentWeather = useCurrentWeatherStore(
@@ -74,6 +74,11 @@ const App = () => {
       }
     }
     getCurrentLocation();
+
+    //setting the loading state to false after the initial page load
+    setTimeout(() => {
+      setLocalLoading(false);
+    }, 1500);
   }, []);
 
   //clearing the cache when the location changes
@@ -89,7 +94,7 @@ const App = () => {
 
   return (
     <SafeAreaProvider>
-      {/* {isLoading && <LoadingScreen />} */}
+      {LocalLoading && <LoadingScreen />}
       <SafeAreaView className="flex-1 relative bg-slate-100 ">
         <ScrollView>
           <Header />
