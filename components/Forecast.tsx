@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import {
   type DailyWeather,
@@ -7,8 +7,6 @@ import {
 import { useWeatherCode } from "@/hooks/useWeatherCode";
 import { useRouter } from "expo-router";
 import { useForcastIndexDate } from "@/store/useForcastDayDate";
-
-
 
 interface ForecastElementProps extends DailyWeather {
   index: number;
@@ -25,7 +23,10 @@ const ForecastElement = (props: ForecastElementProps) => {
     setDate(time);
   };
   return (
-    <TouchableOpacity onPress={() => redirect(props.time)} className="flex my-1 rounded-2xl bg-[rgba(225,225,225,0.65)] flex-row justify-between items-center px-4 py-1">
+    <TouchableOpacity
+      onPress={() => redirect(props.time)}
+      className="flex my-1 rounded-2xl bg-[rgba(225,225,225,0.65)] flex-row justify-between items-center px-4 py-1"
+    >
       <View className="flex flex-col items-start">
         <Text className="font-Roboto-Regular text-gray-700 text-lg">
           {new Date(props.time).toLocaleDateString("en-IN", {
@@ -68,12 +69,9 @@ const Forecast = () => {
         <Text className="font-Roboto-Thin text-xs">Next 14 days</Text>
       </View>
       <View className="flex flex-col px-4 mt-2">
-        <FlatList
-          data={DailyData}
-          renderItem={({ item, index }) => {
-            return <ForecastElement key={index} index={index} {...item} />;
-          }}
-        />
+        {DailyData.map((item, index) => {
+          return <ForecastElement key={index} index={index} {...item} />;
+        })}
       </View>
     </View>
   );
