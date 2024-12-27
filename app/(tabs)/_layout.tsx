@@ -1,9 +1,11 @@
-import { useWeatherCode } from "@/hooks/useWeatherCode";
-import { Slot } from "expo-router";
 import React, { useRef } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { Divider } from "react-native-paper";
 import { useDailyWeatherStore } from "@/store/useDailyWeather";
+import * as Haptics from "expo-haptics";
+import { Slot, useRouter } from "expo-router";
+import { useWeatherCode } from "@/hooks/useWeatherCode";
+import Animated, { Easing, withTiming } from "react-native-reanimated"; // import Animated from react-native-reanimated
 
 interface TabsData {
   date: string;
@@ -16,15 +18,24 @@ interface TabsData {
 }
 
 const DateLayout: React.FC<TabsData> = (props) => {
+  const router = useRouter()
   const { getWeatherIcon } = useWeatherCode();
+  const redirect = (time: string) => {
+    router.push(`/(tabs)/forecast/${props.date}`);
+  };
   return (
     <TouchableOpacity
-      onPress={() => props.onSelect(props.index)}
+      onPress={() => {
+        props.onSelect(props.index);
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+        redirect(props.date);
+      }}
       className="flex-1 relative mx-2 items-center flex-col px-1 bg-gray-300 rounded-xl gap-1 justify-center h-32 w-20"
     >
       <Text className="text-slate-500 font-Roboto-Regular text-lg">
-        {new Date(props.date).toLocaleDateString("en-IN", {
+        {new Date(props.date).toLocaleDateString("en-US", {
           weekday: "short",
+          day: "numeric",
         })}
       </Text>
       <View className="rounded-full bg-green-50 p-2">
@@ -48,8 +59,7 @@ const DateLayout: React.FC<TabsData> = (props) => {
         </Text>
       </View>
       {props.isSelected && (
-             <View className="h-2 absolute w-[60%] bg-indigo-500 rounded-t-3xl z-10 bottom-[-3px]"></View>
-
+        <View className="h-2 absolute w-[60%] bg-indigo-500 rounded-t-3xl z-10 bottom-[-3px]"></View>
       )}
     </TouchableOpacity>
   );
@@ -65,7 +75,7 @@ export default function TabLayout() {
     flatListRef.current?.scrollToIndex({
       animated: true,
       index,
-      viewPosition: 0.5, 
+      viewPosition: 0.5,
     });
   };
 
@@ -85,10 +95,10 @@ export default function TabLayout() {
   return (
     <>
       <View className="flex mx-4 flex-row mt-5">
-        <FlatList
+        <Animated.FlatList 
           ref={flatListRef}
           data={dailyWeatherData}
-          pagingEnabled={false} // Disable paging to allow free scrolling
+          pagingEnabled={false} 
           showsHorizontalScrollIndicator={false}
           renderItem={({ item, index }) => (
             <DateLayout
@@ -104,12 +114,12 @@ export default function TabLayout() {
           keyExtractor={(item) => item.time}
           horizontal
           getItemLayout={(data, index) => ({
-            length: 84.3, 
+            length: 84.3,
             offset: 84.3 * index,
             index,
           })}
-          initialScrollIndex={selected || 0} 
-          onScrollToIndexFailed={scrollToValidIndex} 
+          initialScrollIndex={selected ?? 0} 
+          onScrollToIndexFailed={scrollToValidIndex}
         />
       </View>
       <Divider bold className="my-4" />
