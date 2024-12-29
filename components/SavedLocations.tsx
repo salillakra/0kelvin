@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocation } from "@/store/useLocation";
 import { ReverseGeocoding } from "@/utils/ReverseGeoLocation";
 import { useRouter } from "expo-router";
+import { get } from "axios";
 
 interface SavedLocationsProps {
   location?: {
@@ -47,7 +48,6 @@ const SavedItems = (props: SavedLocationsProps) => {
     <TouchableOpacity
       onPress={() => {
         if (props.location?.latitude && props.location?.longitude) {
-          console.log("props.location", props.location);
           updateLocation({
             latitude: props.location.latitude,
             longitude: props.location.longitude,
@@ -55,7 +55,6 @@ const SavedItems = (props: SavedLocationsProps) => {
           });
           router.push("/");
         }
-        console.log("props.location", props.location);
       }}
     >
       <Divider />
@@ -101,7 +100,7 @@ const SavedLocationsComp = ({ className }: { className?: string }) => {
       setSavedLocations(locations);
     }
     fetchSavedLocations();
-  }, [isManage, forceRender, setLocation]);
+  }, [isManage, forceRender]);
 
   async function getLiveLocation() {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -117,7 +116,11 @@ const SavedLocationsComp = ({ className }: { className?: string }) => {
     const { latitude, longitude } = location.coords;
     const placeName = await ReverseGeocoding(latitude, longitude); // get place name from coordinates
     setLocation({ latitude, longitude, placeName: placeName }); // set location to global state
-    StoreLocations({ location: { latitude, longitude }, placeName: placeName }); // store location to async storage
+    await StoreLocations({
+      location: { latitude, longitude },
+      placeName: placeName,
+    }); // store location to async storage
+    setForceRender((prev) => !prev);
   }
 
   return (
@@ -142,7 +145,7 @@ const SavedLocationsComp = ({ className }: { className?: string }) => {
           </Button>
         </View>
 
-        <View className="mt-2">
+        <View className="mt-2 flex flex-col-reverse">
           {SavedLocations.map((item, index: number) => (
             <SavedItems
               key={index}

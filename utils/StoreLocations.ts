@@ -40,14 +40,11 @@ export const StoreLocations = async (props: {
     });
     AsyncStorage.setItem("SavedLocations", JSON.stringify(locations));
   });
-
-  console.log("SavedLocations", await getSavedLocations());
 };
 
 export const getSavedLocations = async (): Promise<SavedLocationsProps[]> => {
   try {
     const value = await AsyncStorage.getItem("SavedLocations");
-    console.log("value", value);
     if (value !== null) {
       return JSON.parse(value) as SavedLocationsProps[];
     }
