@@ -3,7 +3,7 @@ import React from "react";
 import {
   MapPinIcon,
   MagnifyingGlassIcon,
-  Cog6ToothIcon,
+  InformationCircleIcon,
 } from "react-native-heroicons/outline";
 import { Link } from "expo-router";
 import { Divider } from "react-native-paper";
@@ -24,9 +24,9 @@ const Header = () => {
           <Link href="/search">
             <MagnifyingGlassIcon color={"rgb(0,0,0)"} size={30} />
           </Link>
-          <TouchableOpacity>
-            <Cog6ToothIcon color={"rgb(0,0,0)"} size={30} />
-          </TouchableOpacity>
+          <Link href="/info">
+            <InformationCircleIcon color={"rgb(0,0,0)"} size={30} />
+          </Link>
         </View>
       </View>
       <Divider bold className="mt-5" />
