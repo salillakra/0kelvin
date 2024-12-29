@@ -15,7 +15,7 @@ const ConditionCard: React.FC<ConditionCardProps> = ({
   subtitle,
   icon,
 }) => (
-  <View className="bg-[rgba(225,225,225,0.65)] w-44 h-44 rounded-xl p-4 ">
+  <View className="bg-[rgba(225,225,225,0.65)] w-48 h-44 rounded-xl p-4 ">
     <Text className="text-lg font-medium mb-2">{title}</Text>
     <View className="flex items-start gap-2 mb-2">
       <Feather name={icon} size={24} className="text-gray-500" />
@@ -95,15 +95,15 @@ const WeatherConditions: React.FC<WeatherConditionsProps> = (
       <Text className="text-2xl font-Roboto-Bold text-gray-900 mb-6">
         Current conditions
       </Text>
-      <View className="flex flex-col gap-4 items-center justify-between">
-        <View className="flex flex-row justify-between gap-4">
+      <View className="flex flex-col gap-2 items-center justify-between">
+        <View className="flex flex-row justify-between gap-2">
           <ConditionCard
             title="Max Wind"
             value={`${props.wind_speed} km/h`}
             subtitle={DegreeToDirection(parseInt(props.wind_direction))}
             icon="wind"
           />
-          {(props.relative_humidity !== undefined) && (
+          {props.relative_humidity !== undefined && (
             <ConditionCard
               title="Humidity"
               value={`${props.relative_humidity} %`}
@@ -120,7 +120,7 @@ const WeatherConditions: React.FC<WeatherConditionsProps> = (
             />
           )}
         </View>
-        <View className="flex flex-row gap-4">
+        <View className="flex flex-row gap-2">
           <ConditionCard
             title="UV index"
             value={props.uvIndex.toString()}

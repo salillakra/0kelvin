@@ -19,6 +19,8 @@ import {
 } from "@/store/useHourlyWeather";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
 import { useLocation } from "@/store/useLocation";
+import SunriseSunset from "@/components/SunsetSunrise";
+import Footer from "@/components/Footer";
 
 const App = () => {
   const isLoading = useLoadingStatus((state) => state.isLoading);
@@ -92,11 +94,12 @@ const App = () => {
             uvIndex={dailyWeather[0].uvIndex}
             wind_direction={dailyWeather[0].windDirection.toString()}
           />
-          {/* <SunriseSunset
+          <SunriseSunset
             sunrise={dailyWeather[0].sunrise}
             sunset={dailyWeather[0].sunset}
-          /> */}
+          />
           <WeatherTips WeatherData={aiModelData} />
+          <Footer />
         </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>

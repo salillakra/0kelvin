@@ -113,21 +113,6 @@ const WeatherTips = ({ WeatherData }: { WeatherData: string }) => {
           )}
         </Card.Content>
       </Card>
-
-      <View className="flex-row justify-around mt-6">
-        <View className="items-center">
-          <SunIcon height={35} width={35} color="#eab308" />
-          <Text className="text-gray-800 mt-2 font-medium">Sunny</Text>
-        </View>
-        <View className="items-center">
-          <MoonIcon height={35} width={35} color="#3b82f6" />
-          <Text className="text-gray-800 mt-2 font-medium">Rainy</Text>
-        </View>
-        <View className="items-center">
-          <CloudIcon height={35} width={35} color="#6b7280" />
-          <Text className="text-gray-800 mt-2 font-medium">Cloudy</Text>
-        </View>
-      </View>
     </View>
   );
 };
