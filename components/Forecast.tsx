@@ -17,10 +17,12 @@ const ForecastElement = (props: ForecastElementProps) => {
   const setDate = useForcastIndexDate((state) => state.setForcastIndexDate);
   const setIndex = useForcastIndexDate((state) => state.setIndex);
   const { getWeatherIcon } = useWeatherCode();
+
+  //changing the state of click in store in redirecting to daily tab
   const redirect = (time: string) => {
-    setIndex(props.index);
+    setIndex(props.index); //setting the index of the clicked element, so that it can be used in daily tab
     router.push("/dailyTab");
-    setDate(time);
+    setDate(time); //setting the date of the clicked element, so that it can be used in daily tab
   };
   return (
     <TouchableOpacity
