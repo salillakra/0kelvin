@@ -91,7 +91,7 @@ const WeatherConditions: React.FC<WeatherConditionsProps> = (
   props: WeatherConditionsProps
 ) => {
   return (
-    <View className="p-6 mb-20">
+    <View className="p-6 mb-6">
       <Text className="text-2xl font-Roboto-Bold text-gray-900 mb-6">
         Current conditions
       </Text>

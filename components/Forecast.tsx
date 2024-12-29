@@ -65,10 +65,10 @@ const ForecastElement = (props: ForecastElementProps) => {
 const Forecast = () => {
   const DailyData = useDailyWeatherStore((state) => state.data);
   return (
-    <View>
-      <View className="pl-5 mt-10">
+    <View className="flex flex-col my-10">
+      <View className="pl-5 ">
         <Text className="font-Roboto-Bold text-2xl">Forecast</Text>
-        <Text className="font-Roboto-Thin text-xs">Next 14 days</Text>
+        <Text className="font-Roboto-Light text-xs">Next 14 days</Text>
       </View>
       <View className="flex flex-col px-4 mt-2">
         {DailyData.map((item, index) => {
