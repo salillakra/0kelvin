@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const STORAGE_KEY = "weather";
 
+// Set the weather data
 export const setCache = async (value: any) => {
   try {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(value));
@@ -12,8 +13,6 @@ export const setCache = async (value: any) => {
 
 // Get the weather data
 export const getCache = async () => {
-  setInterval(clearCache, 3600000); // Clear cache every 1 hour
-
   try {
     const value = await AsyncStorage.getItem(STORAGE_KEY);
     if (value !== null) {
@@ -30,14 +29,3 @@ export const getCache = async () => {
   }
   return false;
 };
-
-// Clear the cache every 1 hour
-export const clearCache = async () => {
-  try {
-    await AsyncStorage.removeItem(STORAGE_KEY);
-  } catch (e) {
-    console.log("Error clearing cache", e);
-  }
-};
-
-// Schedule cache clearing every 1 hour

@@ -1,84 +1,83 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, ActivityIndicator, Alert, Image } from "react-native";
-import { Card, Title, Paragraph } from "react-native-paper";
+import React from "react";
+import { View, Text, ActivityIndicator, Image, Platform } from "react-native";
+import { Card, Paragraph } from "react-native-paper";
 import Markdown from "react-native-markdown-display";
 import { SunIcon, CloudIcon, MoonIcon } from "react-native-heroicons/outline";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-const WeatherTips = ({ WeatherData }: { WeatherData: string }) => {
-  const [weatherData, setWeatherData] = useState<string>("");
-  const [weatherTip, setWeatherTip] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+// Type for the weather tip response
+type WeatherTipResponse = {
+  choices: Array<{
+    message: {
+      content: string;
+    };
+  }>;
+};
 
-  const fetchWeatherTip = async () => {
-    setWeatherData(WeatherData); // set the weather data to the state
-    try {
-      const cachedTip = await AsyncStorage.getItem("weatherTip");
-      if (cachedTip) {
-        setWeatherTip(cachedTip);
-        setLoading(false);
-        return;
-      }
-
-      const aiResponse = await axios.post<any>(
-        "https://api.groq.com/openai/v1/chat/completions",
+const fetchWeatherTip = async (weatherData: string): Promise<string> => {
+  const response = await axios<any>({
+    url: "https://api.groq.com/openai/v1/chat/completions",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.EXPO_PUBLIC_GROQ_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify({
+      messages: [
         {
-          messages: [
-            {
-              role: "system",
-              content:
-                "First, introduce yourself by telling your name. Act like a lovely person named Kelvin an AI Weather Assitant. Address the user as 'Dear' and provide lifeStyle tips and tricks for the day and the upcoming week according to the data provided. Additionally, suggest what they should carry if they're going outside, or whether they should stay indoors in 120 words only & use emojis & humour. & never forget to say 'Love, Kelvin' at the end. & always be positive & cheerful. & always be helpful & informative. & never doubt on your source it's accurate what you get as data tell it & give funfacts make it engaging so the reader enjoys it. & don't specify any date like 5 Aug ",
-            },
-            {
-              role: "user",
-              content: `What's the weather advice for today & week? ${weatherData}`,
-            },
-          ],
-          model: "llama-3.1-8b-instant",
+          role: "system",
+          content:
+            "First, introduce yourself by telling your name. Act like a lovely person named Kelvin an AI Weather Assitant. Address the user as 'Dear' and provide lifeStyle tips and tricks for the day and the upcoming week according to the data provided. Additionally, suggest what they should carry if they're going outside, or whether they should stay indoors in 120 words only & use emojis & humour. & never forget to say 'Love, Kelvin' at the end. & always be positive & cheerful. & always be helpful & informative. & never doubt on your source it's accurate what you get as data tell it & give funfacts make it engaging so the reader enjoys it. & don't specify any date like 5 Aug ",
         },
         {
-          headers: {
-            Authorization: `Bearer ${process.env.EXPO_PUBLIC_GROQ_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const tip = aiResponse.data?.choices?.[0]?.message?.content;
-      setWeatherTip(tip);
-      await AsyncStorage.setItem("weatherTip", tip);
-    } catch (error) {
-      Alert.alert("Error", "Failed to fetch weather tips. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+          role: "user",
+          content: `What's the weather advice for today & week? ${weatherData}`,
+        },
+      ],
+      model: "llama-3.1-8b-instant",
+    }),
+  });
 
-  useEffect(() => {
-    fetchWeatherTip();
-  }, []);
+  if (!response.data) {
+    throw new Error("Failed to fetch weather tip");
+  }
 
-  //cleaning cache
-  useEffect(() => {
-    const clearCache = async () => {
-      try {
-        await AsyncStorage.removeItem("weatherTip");
-      } catch (e) {
-        console.log("Error clearing cache", e);
-      }
-    };
-  
-    // Clear cache after a set interval 
-    const cacheClearInterval = setInterval(clearCache, 24 * 60 * 60 * 1000);
-    return () => clearInterval(cacheClearInterval); // Cleanup on unmount
-  }, []);
-  
+  const data = response.data as WeatherTipResponse;
+  return data.choices[0]?.message?.content ?? "No tip available";
+};
+
+const WeatherTips = ({ WeatherData }: { WeatherData: string }) => {
+  const {
+    data: weatherTip,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["weatherTip", WeatherData],
+    queryFn: () => fetchWeatherTip(WeatherData),
+    staleTime: 24 * 60 * 60 * 1000, // Consider data fresh for 24 hours
+    gcTime: 24 * 60 * 60 * 1000, // Keep unused data in cache for 24 hours
+  });
+
+  if (error) {
+    return (
+      <View className="flex-1 bg-[rgba(225,225,225,0.65) px-3 py-6">
+        <Card className="mb-6 rounded-xl">
+          <Card.Content className="bg-gray-200">
+            <Text className="text-red-500 text-center">
+              Failed to fetch weather tips. Please try again.
+            </Text>
+          </Card.Content>
+        </Card>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-[rgba(225,225,225,0.65) px-3 py-6">
       <Card className="mb-6 rounded-xl">
-        <Card.Content className="bg-gray-200 ">
-          <View className="flex-row gap-4  items-center">
+        <Card.Content className="bg-gray-200">
+          <View className="flex-row gap-4 items-center">
             <Image
               className="w-8 h-8 object-cover"
               alt="0kelvin icon"
@@ -88,10 +87,10 @@ const WeatherTips = ({ WeatherData }: { WeatherData: string }) => {
               source={require("@/assets/images/icon.png")}
             />
             <Text className="text-center text-2xl text-blue-800 font-bold">
-              Kelvin’s Weather Tips
+              Kelvin's Weather Tips
             </Text>
           </View>
-          {loading ? (
+          {isLoading ? (
             <ActivityIndicator size="large" color="#1E90FF" className="mt-4" />
           ) : (
             <Paragraph className="mt-4 text-gray-700 text-center text-base">

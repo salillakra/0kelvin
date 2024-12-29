@@ -1,90 +1,168 @@
-import { View, Text, TouchableOpacity, Alert } from 'react-native'
-import { MapPinIcon, XCircleIcon } from "react-native-heroicons/solid"
-import React, { useState } from 'react'
-import SvgMainlyClearDay from '@/icons/MainlyClearDay'
-import { Divider } from 'react-native-paper'
-import { Button } from 'react-native-paper';
-import * as Location from 'expo-location';
+import { View, Text, TouchableOpacity, Alert } from "react-native";
+import { MapPinIcon, XCircleIcon } from "react-native-heroicons/solid";
+import React, { useEffect, useState } from "react";
+import { Divider } from "react-native-paper";
+import { Button } from "react-native-paper";
+import * as Location from "expo-location";
+import { useWeatherCode } from "@/hooks/useWeatherCode";
+import { getSavedLocations, StoreLocations } from "@/utils/StoreLocations";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useLocation } from "@/store/useLocation";
+import { ReverseGeocoding } from "@/utils/ReverseGeoLocation";
+import { useRouter } from "expo-router";
 
-const SavedItems = ({ isManage }: { isManage: boolean }) => {
-    return (
-        <>
-            <Divider />
-            <View className='flex pl-8 my-2 items-center w-full flex-row justify-between px-3 '>
-                <View className='flex flex-row gap-4'>
-                    <View >
-                        <SvgMainlyClearDay height={38} width={38} />
-                    </View>
-                    <View className='flex flex-col'>
-                        <Text className='font-Roboto-Light text-xl'>Gumla,Jharkhand</Text>
-                        <Text className='font-Roboto-Light text-sm'>23&#176; Parly Cloudy</Text>
-                    </View>
-                </View>
-                {
-                    !isManage && (
-                        <Button>
-                            <XCircleIcon color={"#000"} size={22} />
-                        </Button>
-                    )
-                }
-            </View>
-            <Divider />
-        </>
-    )
+interface SavedLocationsProps {
+  location?: {
+    latitude: number;
+    longitude: number;
+  };
+  weatherCode: number;
+  placeName: string;
+  temperature: number;
+  isDay: number;
+  index: number;
+  isManage: boolean;
+  onClickOnX: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SavedLocations = () => {
-    const [location, setLocation] = useState<Location.LocationObject | null>(null);
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
-    const [isManage, setIsManage] = useState<boolean>(true)
+const SavedItems = (props: SavedLocationsProps) => {
+  const { getWeatherIcon, getWeatherTitle } = useWeatherCode();
+  const updateLocation = useLocation((state) => state.setLocation);
+  const router = useRouter();
 
-    async function getCurrentLocation() {
+  const deleteSavedLocation = async () => {
+    const location = await getSavedLocations();
+    const deletedLocation = location.filter(
+      (item, localindex) => localindex !== props.index
+    );
 
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-            setErrorMsg('Permission to access location was denied');
-            return;
+    await AsyncStorage.setItem(
+      "SavedLocations",
+      JSON.stringify(deletedLocation)
+    );
+
+    props.onClickOnX((value) => !value);
+  };
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        if (props.location?.latitude && props.location?.longitude) {
+          console.log("props.location", props.location);
+          updateLocation({
+            latitude: props.location.latitude,
+            longitude: props.location.longitude,
+            placeName: props.placeName,
+          });
+          router.push("/");
         }
-
-        let location = await Location.getCurrentPositionAsync();
-        setLocation(location);
-    }
-
-    if (errorMsg) {
-        Alert.alert(errorMsg)
-    }
-
-
-
-
-    return (
-        <View>
-            <TouchableOpacity onPress={getCurrentLocation} className='flex gap-2 w-44 mt-2 ml-4 rounded-[50px] bg-blue-400 justify-center flex-row items-center py-2 px-3'>
-                <MapPinIcon size={20} color={"#fff"} />
-                <Text className='font-Roboto-Regular text-white'>
-                    Use location
-                </Text>
-            </TouchableOpacity>
-            <View>
-                <View className='flex my-4 px-3 flex-row items-center justify-between'>
-                    <Text className='text-xl font-Roboto-Regular text-blue-600'>Saved locations</Text>
-                    <Button className='font-Roboto-Regular text-xl' onPress={() => setIsManage((value) => !value)}>{isManage ? "Manage" : "Done"}</Button>
-                </View>
-
-                <View className='mt-2'>
-                    <SavedItems isManage={isManage} />
-                    <SavedItems isManage={isManage} />
-                    <SavedItems isManage={isManage} />
-                    <SavedItems isManage={isManage} />
-                    <SavedItems isManage={isManage} />
-                </View>
-            </View>
+        console.log("props.location", props.location);
+      }}
+    >
+      <Divider />
+      <View className="flex pl-3 my-2 items-center w-full flex-row justify-between px-3 ">
+        <View className="flex flex-row gap-4">
+          <View>
+            {getWeatherIcon({
+              WeatherCode: props.weatherCode,
+              IsDay: props.isDay,
+              height: 40,
+              width: 40,
+            })}
+          </View>
+          <View className="flex flex-col">
+            <Text className="font-Roboto-Light text-xl w-64 text-nowrap text-ellipsis overflow-hidden">
+              {props.placeName}
+            </Text>
+            <Text className="font-Roboto-Light text-sm">
+              {`${props.temperature}°C ${getWeatherTitle(props.weatherCode)}`}
+            </Text>
+          </View>
         </View>
-    )
-}
+        {!props.isManage && (
+          <Button onPress={deleteSavedLocation}>
+            <XCircleIcon color={"#000"} size={22} />
+          </Button>
+        )}
+      </View>
+      <Divider />
+    </TouchableOpacity>
+  );
+};
 
-export default SavedLocations
+const SavedLocationsComp = ({ className }: { className?: string }) => {
+  const [SavedLocations, setSavedLocations] = useState<any[]>([]);
+  const [isManage, setIsManage] = useState(true);
+  const [forceRender, setForceRender] = useState(false); // to force render the component on cross Click
+  const setLocation = useLocation((state) => state.setLocation);
 
+  useEffect(() => {
+    async function fetchSavedLocations() {
+      const locations = await getSavedLocations();
+      setSavedLocations(locations);
+    }
+    fetchSavedLocations();
+  }, [isManage, forceRender, setLocation]);
 
+  async function getLiveLocation() {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission Denied",
+        "Please allow location permission to use this feature."
+      );
+      return;
+    }
 
-// {"coords": {"accuracy": 800, "altitude": 0, "altitudeAccuracy": 0, "heading": 0, "latitude": 23.077088, "longitude": 84.5413851, "speed": 0}, "mocked": false, "timestamp": 1735038736538}  
+    let location = await Location.getCurrentPositionAsync();
+    const { latitude, longitude } = location.coords;
+    const placeName = await ReverseGeocoding(latitude, longitude); // get place name from coordinates
+    setLocation({ latitude, longitude, placeName: placeName }); // set location to global state
+    StoreLocations({ location: { latitude, longitude }, placeName: placeName }); // store location to async storage
+  }
+
+  return (
+    <View className={className}>
+      <TouchableOpacity
+        onPress={getLiveLocation}
+        className="flex gap-2 w-44 mt-2 ml-4 rounded-[50px] bg-blue-400 justify-center flex-row items-center py-2 px-3"
+      >
+        <MapPinIcon size={20} color={"#fff"} />
+        <Text className="font-Roboto-Regular text-white">Use location</Text>
+      </TouchableOpacity>
+      <View>
+        <View className="flex my-4 px-3 flex-row items-center justify-between">
+          <Text className="text-xl font-Roboto-Regular text-blue-600">
+            Saved locations
+          </Text>
+          <Button
+            className="font-Roboto-Regular text-xl"
+            onPress={() => setIsManage((value) => !value)}
+          >
+            {isManage ? "Manage" : "Done"}
+          </Button>
+        </View>
+
+        <View className="mt-2">
+          {SavedLocations.map((item, index: number) => (
+            <SavedItems
+              key={index}
+              index={index}
+              weatherCode={item.weatherCode}
+              placeName={item.placeName}
+              temperature={item.temperature}
+              isDay={item.isDay}
+              onClickOnX={setForceRender}
+              isManage={isManage}
+              location={{
+                latitude: item.location.latitude,
+                longitude: item.location.longitude,
+              }}
+            />
+          ))}
+        </View>
+      </View>
+    </View>
+  );
+};
+
+export default SavedLocationsComp;

@@ -11,25 +11,23 @@ import LoadingScreen from "@/components/Loading";
 import WeatherConditions from "@/components/CurrentConditions";
 import { useCurrentWeatherStore } from "@/store/useCurrentWeather";
 import WeatherTips from "@/components/WeatherTips";
-import { useEffect, useState } from "react";
-import { clearCache } from "@/utils/Cache";
+import { useEffect } from "react";
 import { fetchWeather } from "@/utils/fetchWeather";
 import {
   useDailyHourlyForecastStore,
   useHourlyWeatherStore,
 } from "@/store/useHourlyWeather";
-import * as Location from "expo-location";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
+import { useLocation } from "@/store/useLocation";
 
 const App = () => {
-  const [LocalLoading, setLocalLoading] = useState(true);
-  const [location, setLocation] = useState({
-    latitude: 0,
-    longitude: 0,
-  });
+  const isLoading = useLoadingStatus((state) => state.isLoading);
+
   //using the CustomHook to get the Icon (in Hooks folder)
   const { getWeatherTitle } = useWeatherCode();
 
+  //
+  const Location = useLocation((state) => state.location); //getting the location from the store
   const dailyWeather = useDailyWeatherStore((state) => state.data);
   const hourlyWeather = useHourlyWeatherStore((state) => state.hourlyWeather);
   const currentWeather = useCurrentWeatherStore(
@@ -46,22 +44,12 @@ const App = () => {
 
   //using the useEffect hook to get the current location and fetch the weather data
   useEffect(() => {
-    async function getCurrentLocation() {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        alert("Please enable location access to get the weather data");
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-
-      if (location) {
-        setLocation(location.coords); 
-
+    async function fetchLocationFromServer() {
+      if (Location) {
         //fetching the weather data
         await fetchWeather({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
+          latitude: Location.latitude,
+          longitude: Location.longitude,
           getWeatherTitle: getWeatherTitle,
           updateCurrentWeather: updateCurrentWeather,
           updateHourlyWeather: updateHourlyWeather,
@@ -73,18 +61,8 @@ const App = () => {
         console.log("Location is not available");
       }
     }
-    getCurrentLocation();
-
-    //setting the loading state to false after the initial page load
-    setTimeout(() => {
-      setLocalLoading(false);
-    }, 1500);
+    fetchLocationFromServer();
   }, []);
-
-  //clearing the cache when the location changes
-  useEffect(() => {
-    clearCache();
-  }, [location]);
 
   const aiModelData = JSON.stringify({
     dailyWeather: dailyWeather,
@@ -94,7 +72,7 @@ const App = () => {
 
   return (
     <SafeAreaProvider>
-      {LocalLoading && <LoadingScreen />}
+      {isLoading && <LoadingScreen />}
       <SafeAreaView className="flex-1 relative bg-slate-100 ">
         <ScrollView>
           <Header />

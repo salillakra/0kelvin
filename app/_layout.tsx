@@ -1,11 +1,22 @@
 import { Slot, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "../global.css";
 
 import React, { useEffect } from "react";
 
 SplashScreen.preventAutoHideAsync();
+
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 60 * 24, // 24 hours
+      gcTime: 1000 * 60 * 60 * 24, // 24 hours
+    },
+  },
+});
 
 export default function _layout() {
   const [loaded, error] = useFonts({
@@ -27,5 +38,9 @@ export default function _layout() {
     return null;
   }
 
-  return <Slot />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Slot />
+    </QueryClientProvider>
+  );
 }

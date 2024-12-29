@@ -28,12 +28,16 @@ export const fetchWeather = async ({
   const URI = `https://api.open-meteo.com/v1/forecast?current=temperature_2m,is_day,weather_code,apparent_temperature,relative_humidity_2m&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum,wind_speed_10m_max,snowfall_sum,wind_direction_10m_dominant&timezone=Asia%2FKolkata`;
 
   try {
-    updateLoadingState(true);
     let data = await getCache();
 
-    if (data) {
+    if (
+      parseInt(data.longitude) === parseInt(longitude.toString()) &&
+      parseInt(data.latitude) === parseInt(latitude.toString())
+    ) {
       console.log("Data fetched from cache");
     } else {
+      console.log("Data fetched from server");
+      updateLoadingState(true);
       const response = await axios.get<any>(URI, {
         params: {
           latitude: latitude,
@@ -45,7 +49,9 @@ export const fetchWeather = async ({
           "User-Agent": "0Kelvin/1.0",
         },
       });
+      updateLoadingState(false);
       data = response.data;
+      setCache(data);
     }
 
     const AQI_response = await axios.get<any>(
@@ -101,7 +107,6 @@ export const fetchWeather = async ({
     updateHourlyWeather(temp_hourlyweather); //updating the hourly weather data
     updatedailyHourlyForecast(temp_dailyhourlyforecast); //updating the daily hourly forecast data
 
-
     //arranging the response data
     let temp_dailyweather = new Array<DailyWeather>();
     data.daily.time.forEach((time: string, index: number) => {
@@ -122,12 +127,6 @@ export const fetchWeather = async ({
     });
 
     updateDailyWeather(temp_dailyweather); //updating the daily weather data
-
-    // Cache the weather data
-    setCache(data);
-
-    //loading false
-    updateLoadingState(false);
   } catch (error: any) {
     updateLoadingState(false);
     console.error(
