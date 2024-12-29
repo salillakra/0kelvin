@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "0kelvin",
-    "slug": "0kelvin",
+    "name": "OKelvin",
+    "slug": "OKelvin",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -16,7 +16,11 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.salillakra.0kelvin"
+      "package": "com.salillakra.OKelvin",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -48,12 +52,20 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow 0kelvin to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow OKelvin to use your location."
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "52d3a522-d61e-4d0d-b306-ae417784d966"
+      }
     }
   }
 }
