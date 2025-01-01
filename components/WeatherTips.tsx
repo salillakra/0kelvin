@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Text, ActivityIndicator, Image, Platform } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import { Card, Paragraph } from "react-native-paper";
+import { Image} from 'expo-image'
 import Markdown from "react-native-markdown-display";
-import { SunIcon, CloudIcon, MoonIcon } from "react-native-heroicons/outline";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -77,14 +77,12 @@ const WeatherTips = ({ WeatherData }: { WeatherData: string }) => {
     <View className="flex-1 bg-[rgba(225,225,225,0.65) px-3 py-6">
       <Card className="mb-6 rounded-xl">
         <Card.Content className="bg-gray-200">
-          <View className="flex-row gap-4 items-center">
+          <View className="flex-row gap-3 justify-center items-center">
             <Image
-              className="w-8 h-8 object-cover"
+              className="w-10 h-10 object-cover rounded-full"
               alt="0kelvin icon"
               key="0kelvin icon"
-              height={32}
-              width={32}
-              source={require("@/assets/images/icon.png")}
+              source={require("@/assets/images/black-bear.gif")}
             />
             <Text className="text-center text-2xl text-blue-800 font-bold">
               Kelvin's Weather Tips
