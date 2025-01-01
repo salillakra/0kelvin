@@ -79,9 +79,10 @@ const WeatherTips = ({ WeatherData }: { WeatherData: string }) => {
         <Card.Content className="bg-gray-200">
           <View className="flex-row gap-3 justify-center items-center">
             <Image
-              className="w-10 h-10 object-cover rounded-full"
+              style={{ width: 40, height: 40, borderRadius: 20 }}
               alt="0kelvin icon"
               key="0kelvin icon"
+              contentFit="cover"
               source={require("@/assets/images/black-bear.gif")}
             />
             <Text className="text-center text-2xl text-blue-800 font-bold">

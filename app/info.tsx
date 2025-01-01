@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
 const blurhash =
@@ -11,13 +11,13 @@ export default function App() {
   return (
     <View className="flex-1 justify-center items-center relative bg-white">
       <Image
-        className="absolute brightness-125 inset-0 w-full h-full"
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
         source={require('@/assets/images/wallpaper.webp')}
         placeholder={{ blurhash }}
         contentFit="cover"
         transition={1000}
       />
-      <View className="absolute inset-3 bg-black bg-opacity-40 rounded-lg max-w-3xl mx-auto flex justify-center items-center">
+      <View className="absolute inset-3 bg-opacity-40 rounded-lg max-w-3xl mx-auto flex justify-center items-center">
         <Text className="text-3xl font-bold text-white text-center mb-6">
           Message from the Developer
         </Text>
@@ -49,8 +49,9 @@ export default function App() {
             onPress={() => router.push('https://salillakra.vercel.app')}>
             Visit my website
           </Button>
-        </View>
 
+        </View>
+        
       </View>
     </View>
   );
