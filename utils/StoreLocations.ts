@@ -28,6 +28,13 @@ export const StoreLocations = async (props: {
   const isDay = response.data.current.is_day;
   const placeName = props.placeName;
   await getSavedLocations().then((locations) => {
+
+    locations = locations.filter(
+      (location) =>
+        location.location.latitude !== props.location.latitude &&
+        location.location.longitude !== props.location.longitude
+    );
+
     locations.push({
       location: {
         latitude: props.location.latitude,
@@ -35,9 +42,11 @@ export const StoreLocations = async (props: {
       },
       weatherCode,
       temperature,
-      placeName,
       isDay,
+      placeName,
+
     });
+    
     AsyncStorage.setItem("SavedLocations", JSON.stringify(locations));
   });
 };

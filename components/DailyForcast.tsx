@@ -5,6 +5,7 @@ import { useWeatherCode } from "@/hooks/useWeatherCode";
 import { useDailyHourlyForecastStore } from "@/store/useHourlyWeather";
 import Hourly from "@/components/Hourly";
 import WeatherConditions from "@/components/CurrentConditions";
+import SunriseSunset from "./SunsetSunrise";
 interface ForecastCompProps {
   date: string;
 }
@@ -41,7 +42,7 @@ const ForecastComp = (props: ForecastCompProps) => {
   );
 
   return (
-    <View className="">
+    <View>
       <View className="flex flex-col gap-1 mx-4 bg-[rgba(225,225,225,0.65)] p-4 rounded-lg">
         <Text className="text-gray-500 mb-2 font-Roboto-Regular text-xl">
           {TellTodayOrTomorrow(props.date)}
@@ -81,6 +82,7 @@ const ForecastComp = (props: ForecastCompProps) => {
         precipitation={dataForThisComp_Daily[0].precipitation.toString()}
         snowfall_sum={dataForThisComp_Daily[0].snowfall_sum}
       />
+      <SunriseSunset sunset={dataForThisComp_Daily[0].sunset} sunrise={dataForThisComp_Daily[0].sunrise}/>
     </View>
   );
 };

@@ -15,7 +15,7 @@ const ConditionCard: React.FC<ConditionCardProps> = ({
   subtitle,
   icon,
 }) => (
-  <View className="bg-[rgba(225,225,225,0.65)] w-48 h-44 rounded-xl p-4 ">
+  <View className="bg-[rgba(225,225,225,0.65)] w-44 h-44 rounded-xl p-4 ">
     <Text className="text-lg font-medium mb-2">{title}</Text>
     <View className="flex items-start gap-2 mb-2">
       <Feather name={icon} size={24} className="text-gray-500" />

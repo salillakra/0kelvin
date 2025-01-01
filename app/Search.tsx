@@ -7,7 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { Searchbar, Text, Divider, Button } from "react-native-paper";
+import { Searchbar, Text, Divider, Button, Snackbar } from "react-native-paper";
 import axios from "axios";
 import SavedLocationsComp from "@/components/SavedLocations";
 import { useLocation } from "@/store/useLocation";
@@ -37,6 +37,12 @@ const Search = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const updateLocation = useLocation((state) => state.setLocation);
   const router = useRouter();
+
+  //snackbar
+  const [visible, setVisible] = React.useState(false);
+
+
+  const onDismissSnackBar = () => setVisible(false);
 
   const fetchSuggestions = async (query: string): Promise<void> => {
     if (query.length < 3) {
@@ -93,10 +99,23 @@ const Search = () => {
         place.address.state_district ||
         place.display_name,
     });
+
+    //show snackbar
+    setVisible(true);
+
+
   };
 
   return (
     <>
+    <Snackbar
+      visible={visible}
+      onDismiss={onDismissSnackBar}
+      duration={3000}
+      style={{ backgroundColor: "black"}}
+    >
+      <Text style={{ color: '#fff' }}>Location Saved</Text>
+    </Snackbar>
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -128,8 +147,8 @@ const Search = () => {
                       onPress={() => handleSuggestionPress(item)}
                     >
                       <View className="mb-1 flex flex-row justify-between bg-[rgba(225,225,225,0.65)] rounded-md ">
-                        <View className="flex flex-col items-start justify-between px-4 py-3">
-                          <Text className="text-lg font-Roboto-Medium w-60 ">
+                        <View className="flex flex-col gap-2 items-start w-52 justify-between px-4 py-3">
+                          <Text className="text-lg font-Roboto-Bold w-52 leading-snug"> 
                             {item.display_name}
                           </Text>
                           {(item.address?.state || item.address?.country) && (
@@ -142,7 +161,6 @@ const Search = () => {
                         <View className="flex items-center justify-center px-4 py-3">
                           <Button
                             mode="contained"
-                            className=""
                             onPress={() => SaveLocation(item)}
                           >
                             Save

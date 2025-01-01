@@ -60,7 +60,7 @@ const SavedItems = (props: SavedLocationsProps) => {
       <Divider />
       <View className="flex pl-3 my-2 items-center w-full flex-row justify-between px-3 ">
         <View className="flex flex-row gap-4">
-          <View>
+          <View className="flex items-center justify-center">
             {getWeatherIcon({
               WeatherCode: props.weatherCode,
               IsDay: props.isDay,
@@ -77,11 +77,13 @@ const SavedItems = (props: SavedLocationsProps) => {
             </Text>
           </View>
         </View>
-        {!props.isManage && (
-          <Button onPress={deleteSavedLocation}>
-            <XCircleIcon color={"#000"} size={22} />
-          </Button>
-        )}
+        <View className="mr-5">
+          {!props.isManage && (
+            <TouchableOpacity onPress={deleteSavedLocation}>
+              <XCircleIcon color={"#000"} size={22} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
       <Divider />
     </TouchableOpacity>
@@ -119,19 +121,22 @@ const SavedLocationsComp = ({ className }: { className?: string }) => {
     await StoreLocations({
       location: { latitude, longitude },
       placeName: placeName,
-    }); // store location to async storage
+    }); // store location to storage
     setForceRender((prev) => !prev);
   }
 
   return (
-    <View className={className}>
-      <TouchableOpacity
-        onPress={getLiveLocation}
-        className="flex gap-2 w-44 mt-2 ml-4 rounded-[50px] bg-blue-400 justify-center flex-row items-center py-2 px-3"
-      >
-        <MapPinIcon size={20} color={"#fff"} />
-        <Text className="font-Roboto-Regular text-white">Use location</Text>
-      </TouchableOpacity>
+    <TouchableOpacity
+      onPress={getLiveLocation}
+      className={className}>
+      <View>
+        <View
+          className="flex gap-2 w-40 mt-2 ml-4 rounded-[50px] bg-blue-400 justify-center flex-row items-center py-2 px-3"
+        >
+          <MapPinIcon size={20} color={"#fff"} />
+          <Text className="font-Roboto-Regular text-white">Use location</Text>
+        </View>
+      </View>
       <View>
         <View className="flex my-4 px-3 flex-row items-center justify-between">
           <Text className="text-xl font-Roboto-Regular text-blue-600">
@@ -164,7 +169,7 @@ const SavedLocationsComp = ({ className }: { className?: string }) => {
           ))}
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

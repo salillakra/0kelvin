@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
 import React from "react";
 import {
   MapPinIcon,
@@ -16,8 +16,7 @@ const Header = () => {
     <>
       <View className="flex px-5 mt-4 justify-between flex-row items-center ">
         <View className="flex flex-col ">
-          <Text className="text-Black font-bold text-xl w-[15rem] overflow-hidden text-nowrap text-ellipsis">{PlaceName}lorem10
-            Lorem, ipsum dolor sit amet consectetur
+          <Text className="text-Black font-bold text-xl w-[15rem] overflow-hidden text-nowrap text-ellipsis">{PlaceName}
           </Text>
           <MapPinIcon color={"rgb(0,0,0)"} size={12} />
         </View>
