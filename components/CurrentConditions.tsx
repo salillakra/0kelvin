@@ -7,6 +7,7 @@ interface ConditionCardProps {
   value: string;
   subtitle: string;
   icon: any;
+  color: string;
 }
 
 const ConditionCard: React.FC<ConditionCardProps> = ({
@@ -14,11 +15,12 @@ const ConditionCard: React.FC<ConditionCardProps> = ({
   value,
   subtitle,
   icon,
+  color,
 }) => (
   <View className="bg-[rgba(225,225,225,0.65)] w-44 h-44 rounded-xl p-4 ">
     <Text className="text-lg font-medium mb-2">{title}</Text>
     <View className="flex items-start gap-2 mb-2">
-      <Feather name={icon} size={24} className="text-gray-500" />
+      <Feather name={icon} size={24} color={color} />
       <Text className="text-2xl font-semibold text-gray-900">{value}</Text>
     </View>
     <Text className="text-gray-500 text-start text-sm">{subtitle}</Text>
@@ -91,7 +93,7 @@ const WeatherConditions: React.FC<WeatherConditionsProps> = (
   props: WeatherConditionsProps
 ) => {
   return (
-    <View className="p-6 mb-6">
+    <View className="px-6  my-6">
       <Text className="text-2xl font-Roboto-Bold text-gray-900 mb-6">
         Current conditions
       </Text>
@@ -102,6 +104,7 @@ const WeatherConditions: React.FC<WeatherConditionsProps> = (
             value={`${props.wind_speed} km/h`}
             subtitle={DegreeToDirection(parseInt(props.wind_direction))}
             icon="wind"
+            color="blue"
           />
           {props.relative_humidity !== undefined && (
             <ConditionCard
@@ -109,6 +112,7 @@ const WeatherConditions: React.FC<WeatherConditionsProps> = (
               value={`${props.relative_humidity} %`}
               subtitle={`Dew point ${props.Temp?.toFixed(1)}°C`}
               icon="droplet"
+              color="green"
             />
           )}
           {(props.snowfall_sum ?? -1) >= 0 && (
@@ -117,6 +121,7 @@ const WeatherConditions: React.FC<WeatherConditionsProps> = (
               value={`${props.snowfall_sum} cm`}
               subtitle={snowfall_sumComment(props.snowfall_sum || 0)}
               icon="cloud-snow"
+              color="gray"
             />
           )}
         </View>
@@ -126,12 +131,14 @@ const WeatherConditions: React.FC<WeatherConditionsProps> = (
             value={props.uvIndex.toString()}
             subtitle={UVIndexComment(props.uvIndex).toString()}
             icon="sun"
+            color="orange"
           />
           <ConditionCard
-            title="Precepitation"
+            title="Precipitation"
             value={props.precipitation + " mm"}
             subtitle={precipitationComment(parseInt(props.precipitation))}
             icon="cloud-rain"
+            color="purple"
           />
         </View>
       </View>

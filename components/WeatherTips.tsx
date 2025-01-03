@@ -80,8 +80,8 @@ const WeatherTips = ({ WeatherData }: { WeatherData: string }) => {
           <View className="flex-row gap-3 justify-center items-center">
             <Image
               style={{ width: 40, height: 40, borderRadius: 20 }}
-              alt="0kelvin icon"
-              key="0kelvin icon"
+              alt="Okelvin icon"
+              key="Okelvin icon"
               contentFit="cover"
               source={require("@/assets/images/black-bear.gif")}
             />

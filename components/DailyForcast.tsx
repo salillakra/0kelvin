@@ -6,6 +6,8 @@ import { useDailyHourlyForecastStore } from "@/store/useHourlyWeather";
 import Hourly from "@/components/Hourly";
 import WeatherConditions from "@/components/CurrentConditions";
 import SunriseSunset from "./SunsetSunrise";
+import { Divider } from "react-native-paper";
+import Footer from "./Footer";
 interface ForecastCompProps {
   date: string;
 }
@@ -74,7 +76,7 @@ const ForecastComp = (props: ForecastCompProps) => {
       <WeatherConditions
         Temp={
           (dataForThisComp_Daily[0].maxTemperature +
-          dataForThisComp_Daily[0].minTemperature) / 2
+            dataForThisComp_Daily[0].minTemperature) / 2
         }
         wind_direction={dataForThisComp_Daily[0].windDirection.toString()}
         uvIndex={dataForThisComp_Daily[0].uvIndex}
@@ -82,7 +84,9 @@ const ForecastComp = (props: ForecastCompProps) => {
         precipitation={dataForThisComp_Daily[0].precipitation.toString()}
         snowfall_sum={dataForThisComp_Daily[0].snowfall_sum}
       />
-      <SunriseSunset sunset={dataForThisComp_Daily[0].sunset} sunrise={dataForThisComp_Daily[0].sunrise}/>
+      <Divider />
+      <SunriseSunset sunset={dataForThisComp_Daily[0].sunset} sunrise={dataForThisComp_Daily[0].sunrise} />
+      <Divider/>
     </View>
   );
 };
@@ -91,6 +95,7 @@ const DailyForcast = ({ date }: { date: string }) => {
   return (
     <View>
       <ForecastComp date={date} />
+      <Footer />
     </View>
   );
 };

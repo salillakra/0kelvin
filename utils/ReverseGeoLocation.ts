@@ -35,7 +35,7 @@ const fetchLocation = async (
       lon: longitude,
     },
     headers: {
-      "User-Agent": "0Kelvin/1.0",
+      "User-Agent": "Okelvin/1.0",
     },
   });
 

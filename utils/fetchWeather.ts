@@ -46,7 +46,7 @@ export const fetchWeather = async ({
         },
         headers: {
           "Content-Type": "application/json",
-          "User-Agent": "0Kelvin/1.0",
+          "User-Agent": "Okelvin/1.0",
         },
       });
       updateLoadingState(false);

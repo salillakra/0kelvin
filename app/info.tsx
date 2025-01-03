@@ -22,8 +22,8 @@ export default function App() {
           Message from the Developer
         </Text>
         <Text className="text-lg text-white font-normal text-center mb-4 px-4">
-          Dear users, this is Salil Lakra, the developer of this 0kelvin. I am
-          an undergraduate student at BIT Mesra, and I have developed 0kelvin
+          Dear users, this is Salil Lakra, the developer of this Okelvin. I am
+          an undergraduate student at BIT Mesra, and I have developed Okelvin
           as part of my project. I hope you find this app helpful and
           enjoyable.
         </Text>
@@ -38,7 +38,7 @@ export default function App() {
           journey!
         </Text>
         <Text className="text-base text-gray-300 font-normal text-center mt-4 px-4">
-          0kelvin is open-source and available on GitHub. Feel free to check by
+          Okelvin is open-source and available on GitHub. Feel free to check by
           the link below.
         </Text>
 

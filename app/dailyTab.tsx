@@ -11,7 +11,7 @@ import { Divider } from "react-native-paper";
 import { useDailyWeatherStore } from "@/store/useDailyWeather";
 import * as Haptics from "expo-haptics";
 import { useWeatherCode } from "@/hooks/useWeatherCode";
-import Animated from "react-native-reanimated";
+import Animated, { SlideInRight } from "react-native-reanimated";
 import DailyForcast from "@/components/DailyForcast";
 import { useForcastIndexDate } from "@/store/useForcastDayDate";
 
@@ -34,7 +34,7 @@ const DateLayout: React.FC<TabsData> = (props) => {
       onPress={() => {
         props.onSelect(props.index);
         if (Platform.OS === "ios" || Platform.OS === "android") {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);          
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
         }
         props.setDate(props.date);
         setIndex(props.index);
@@ -108,6 +108,8 @@ export default function DailyTab() {
     <ScrollView>
       <View className="flex mx-4 flex-row mt-5">
         <Animated.FlatList
+          entering={SlideInRight.springify(2000)}
+          contentContainerStyle={{ flexGrow: 1 }}
           ref={flatListRef}
           data={dailyWeatherData}
           pagingEnabled={false}
