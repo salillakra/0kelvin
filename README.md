@@ -17,7 +17,7 @@ Okelvin is a sleek and user-friendly weather app that provides real-time weather
 
 ## Tech Stack
 
-- **Frontend**: React Native, Expo, NativeWind
+- **Frontend**: React Native, Expo, NativeWind, Zustand, Tan-Stack Query V5, more...(see the package.json)
 - **Backend**: OpenMeteor API for weather data, AI models for lifestyle recommendations
 - **Build Tools**: EAS (Expo Application Services)
 
@@ -33,7 +33,7 @@ Okelvin retrieves accurate weather data from the **OpenMeteo API**, a reliable a
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/okelvin.git
+   git clone https://github.com/salillakra/0kelvin.git
    ```
 
 2. Navigate to the project directory:
